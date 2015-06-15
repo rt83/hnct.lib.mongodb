@@ -13,5 +13,5 @@ class MongoDb(host: String, port: Int) {
   
   def useColl(name: String): MongoCollection = db(name)
   
-  def useColl(clazz: Class[_]): MongoCollection = useColl(clazz.getName)
+  def useColl(clazz: Class[_]): MongoCollection = useColl(clazz.getSimpleName)
 }
