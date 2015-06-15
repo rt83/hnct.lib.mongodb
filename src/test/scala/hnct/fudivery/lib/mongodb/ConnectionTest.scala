@@ -16,6 +16,6 @@ object ConnectionTest extends App {
   colTest.insert(MongoDBObject("first line" -> 1))
   
   val all = colTest.find()
-  for (doc <- all) logger.info(doc.toString())
-//  Console.println(colTest.)
+  for (doc <- all) //logger.info(doc.toString())
+    Console.println(doc.toString())
 }
