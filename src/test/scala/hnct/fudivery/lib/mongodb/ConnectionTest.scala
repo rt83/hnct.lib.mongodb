@@ -19,7 +19,7 @@ object ConnectionTest extends App {
   val colTest = mongoDb.useColl(classOf[ItemE])
   val item1 = new ItemE()
   item1.name = "abs"
-//  item1.ingredients = "igrd1" :: "igrd2" :: item1.ingredients
+  item1.ingredients += "igrd1" -> "6"
   Console.println(item1.toString)
   Console.println(item1.toJson)
   
