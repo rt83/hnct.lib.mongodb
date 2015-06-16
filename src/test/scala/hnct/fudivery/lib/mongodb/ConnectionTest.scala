@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory
 import hnct.fudivery.lib.mongodb.model.ItemE
 import com.mongodb.util.JSON
 import com.mongodb.DBObject
+import hnct.fudivery.lib.mongodb.model.EntityE
 
 /**
  * @author tduccuong
@@ -17,13 +18,16 @@ object ConnectionTest extends App {
   
   val colTest = mongoDb.useColl(classOf[ItemE])
   val item1 = new ItemE()
-  item1.id = "id2";
-  val item2 = new ItemE()
+  item1.name = "abs"
+//  item1.ingredients = "igrd1" :: "igrd2" :: item1.ingredients
+  Console.println(item1.toString)
+  Console.println(item1.toJson)
   
   colTest.insert(item1.toDbObject())
-  colTest.insert(item2.toDbObject())
   
   val all = colTest.find()
-  for (doc <- all) //logger.info(doc.toString())
-    Console.println(doc.toString())
+  for (doc <- all) {//logger.info(doc.toString())
+    val item = EntityE.fromDbObject(doc, classOf[ItemE]).asInstanceOf[ItemE] 
+    Console.println(item.toJson)
+  }
 }
