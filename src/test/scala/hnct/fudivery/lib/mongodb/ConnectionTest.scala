@@ -1,11 +1,13 @@
 package hnct.fudivery.lib.mongodb
 
-import com.mongodb.casbah.commons.MongoDBObject
 import org.slf4j.LoggerFactory
 import hnct.fudivery.lib.mongodb.model.ItemE
-import com.mongodb.util.JSON
-import com.mongodb.DBObject
-import hnct.fudivery.lib.mongodb.model.EntityE
+import play.api.libs.json._
+import hnct.fudivery.lib.mongodb.model.ItemE
+import com.owlike.genson._
+import org.json4s.jackson.Serialization
+import org.json4s.NoTypeHints
+import hnct.fudivery.lib.mongodb.model.AbcE
 
 /**
  * @author tduccuong
@@ -17,17 +19,21 @@ object ConnectionTest extends App {
   mongoDb.useDb("fudivery")
   
   val colTest = mongoDb.useColl(classOf[ItemE])
-  val item1 = new ItemE()
-  item1.name = "abs"
-  item1.ingredients += "igrd1" -> "6"
-  Console.println(item1.toString)
-  Console.println(item1.toJson)
   
-  colTest.insert(item1.toDbObject())
+  implicit val formats = Serialization.formats(NoTypeHints)
+  val abc1 = AbcE("abc1", Vector("1", "2", "3"))
+  val s = Serialization.write(abc1)
+  println(s)
   
-  val all = colTest.find()
-  for (doc <- all) {//logger.info(doc.toString())
-    val item = EntityE.fromDbObject(doc, classOf[ItemE]).asInstanceOf[ItemE] 
-    Console.println(item.toJson)
-  }
+  val abc2 = Serialization.read[AbcE](s)
+  println(Serialization.write(abc2))
+  
+//  colTest.insert(item1.toDbObject())
+//  
+//  val all = colTest.find()
+//  for (doc <- all) {
+//    Console.println(doc.toString())
+//    val item = EntityE.fromDbObject(doc, classOf[ItemE]).asInstanceOf[ItemE] 
+//    Console.println(item.toJson)
+//  }
 }
