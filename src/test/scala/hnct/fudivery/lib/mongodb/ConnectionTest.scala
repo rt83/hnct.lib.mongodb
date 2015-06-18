@@ -9,6 +9,7 @@ import org.json4s.jackson.Serialization
 import org.json4s.NoTypeHints
 import hnct.fudivery.lib.mongodb.model._
 import org.bson.types.ObjectId
+import com.mongodb.casbah.commons.MongoDBObject
 
 /**
  * @author tduccuong
@@ -16,13 +17,10 @@ import org.bson.types.ObjectId
 object ConnectionTest extends App {
   val logger = LoggerFactory.getLogger("ConnectionTest")
   
-  val mongoDb = new MongoDb("localhost", 27017)
-  mongoDb.useDb("fudivery")
+  val mongoDb = new MongoDb("localhost", 27017, "fudivery")
   
-  val colTest = mongoDb.useColl(classOf[ItemE])
-  
-  implicit val formats = Serialization.formats(NoTypeHints)
-  val abc1 = ItemE(
+  val item = ItemE(
+    ModelBuilder.MODEL_VERSION,
     new ObjectId().toString(), 
     "abc1", 
     Vector("1", "2", "3"),
@@ -33,10 +31,11 @@ object ConnectionTest extends App {
       ("fb1", "uid1", 0.3)
     )
   )
+  val col = mongoDb.useCol[ItemE] 
+  col.insert(item.toDbObject)
   
-  colTest.insert(abc1.toDbObject)
-  
-  val all = colTest.find()
+  val query = MongoDBObject()
+  val all = mongoDb.query[ItemE](query)
   for (doc <- all) {
     val item = ModelBuilder.fromDbObject[ItemE](doc) 
     Console.println(item.toJson)

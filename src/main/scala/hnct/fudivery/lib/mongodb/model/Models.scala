@@ -4,6 +4,7 @@ import org.json4s.jackson.Serialization
 import org.json4s.NoTypeHints
 import com.mongodb.util.JSON
 import com.mongodb.DBObject
+import com.mongodb.casbah.commons.MongoDBObject
 
 /**
  * @author tduccuong
@@ -12,12 +13,18 @@ import com.mongodb.DBObject
 trait Serializable {
   private val formats = Serialization.formats(NoTypeHints)
   
-  def toJson = Serialization.write(this)(formats)
+  def toJson = Serialization.writePretty(this)(formats)
   
   def toDbObject = JSON.parse(toJson).asInstanceOf[DBObject]
 }
 
 object ModelBuilder {
+  // every model must be bound with a version to prevent inconsistency when loading data from db
+  val MODEL_VERSION = "0.0.1"
+  
+  // this query will always prepended to any query in our system to ensure that only models of the current version will be loaded
+  val MODEL_QUERY = MongoDBObject("modver" -> MODEL_VERSION)
+  
   implicit val formats = Serialization.formats(NoTypeHints)
   
   def fromJson[T](json: String)(implicit m: Manifest[T]) = Serialization.read[T](json)
@@ -26,6 +33,7 @@ object ModelBuilder {
 }
 
 case class ItemE(
+  modver: String,
   _id: String, 
   name: String, 
   ingrds: Seq[String],
