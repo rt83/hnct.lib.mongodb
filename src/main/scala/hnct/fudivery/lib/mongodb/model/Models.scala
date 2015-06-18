@@ -36,32 +36,38 @@ object ModelBuilder {
 
 /* --------------------------------------- Item model --------------------------------------- */
 
-case class ItemE(
+case class FeedbackE(id: String, userId: String, rank: Double)
+case class FoodTypeE(id: String, name: String)
+case class FoodCategoryE(id: String, name: String)
+case class RestaurantE(id: String, name: String, lat: Double, lon: Double, addr: String)
+case class DiscountProgramE(id: String, name: String)
+
+case class ItemM(
   modver: String,
   _id: String, 
   name: String, 
   ingrds: Seq[String],
   photos: Seq[String],
   desc: String,
-  feedbacks: Seq[Tuple3[String, String, Double]], // Seq{(feedbackId, userId, rankingScore)}
-  foodTypes: Seq[Tuple2[String, String]], // Seq{(foodTypeName, foodTypeId)}
-  foodCats: Seq[Tuple2[String, String]], // Seq{(foodCatName, foodCatId)}
-  restaurant: Tuple5[String, String, Double, Double, String], // (resName, resId, (lat, lon), resAddr)
-  disProgs: Seq[Tuple2[String, String]] // Seq{(progName, progId)}
+  feedbacks: Seq[FeedbackE], // Seq{(feedbackId, userId, rankingScore)}
+  foodTypes: Seq[FoodTypeE], // Seq{(foodTypeName, foodTypeId)}
+  foodCats: Seq[FoodCategoryE], // Seq{(foodCatName, foodCatId)}
+  restaurant: RestaurantE, // (resName, resId, (lat, lon), resAddr)
+  disProgs: Seq[DiscountProgramE] // Seq{(progName, progId)}
 ) extends Serializable
 
-object ItemE {
+object ItemM {
   def apply(
     name: String, 
     ingrds: Seq[String],
     photos: Seq[String],
     desc: String,
-    feedbacks: Seq[Tuple3[String, String, Double]],
-    foodTypes: Seq[Tuple2[String, String]],
-    foodCats: Seq[Tuple2[String, String]],
-    restaurant: Tuple5[String, String, Double, Double, String],
-    disProgs: Seq[Tuple2[String, String]]
-  ) = new ItemE(
+    feedbacks: Seq[FeedbackE],
+	  foodTypes: Seq[FoodTypeE],
+	  foodCats: Seq[FoodCategoryE],
+	  restaurant: RestaurantE,
+	  disProgs: Seq[DiscountProgramE]
+  ) = new ItemM(
     ModelBuilder.MODEL_VERSION,
     new ObjectId().toString,
     name, ingrds, photos, desc, feedbacks, foodTypes, foodCats, restaurant, disProgs
@@ -70,18 +76,18 @@ object ItemE {
 
 /* --------------------------------------- Ingredient model --------------------------------------- */
 
-case class IngredientE(
+case class IngredientM(
   modver: String,
   _id: String, 
   name: String, 
   desc: String
 ) extends Serializable
 
-object IngredientE {
+object IngredientM {
   def apply(
     name: String, 
     desc: String
-  ) = new IngredientE(
+  ) = new IngredientM(
     ModelBuilder.MODEL_VERSION,
     new ObjectId().toString,
     name, desc

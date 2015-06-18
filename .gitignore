@@ -8,3 +8,4 @@
 .project
 .cache-main
 .cache-tests
+.cache
