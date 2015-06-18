@@ -5,6 +5,7 @@ import org.json4s.NoTypeHints
 import com.mongodb.util.JSON
 import com.mongodb.DBObject
 import com.mongodb.casbah.commons.MongoDBObject
+import org.bson.types.ObjectId
 
 /**
  * @author tduccuong
@@ -41,3 +42,17 @@ case class ItemE(
   desc: String,
   feedbacks: Seq[Tuple3[String, String, Double]]
 ) extends Serializable
+
+object ItemE {
+  def apply(
+    name: String, 
+    ingrds: Seq[String],
+    photos: Seq[String],
+    desc: String,
+    feedbacks: Seq[Tuple3[String, String, Double]]
+  ) = new ItemE(
+    ModelBuilder.MODEL_VERSION,
+    new ObjectId().toString,
+    name, ingrds, photos, desc, feedbacks
+  )
+}

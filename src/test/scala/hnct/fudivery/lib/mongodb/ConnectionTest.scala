@@ -20,8 +20,6 @@ object ConnectionTest extends App {
   val mongoDb = new MongoDb("localhost", 27017, "fudivery")
   
   val item = ItemE(
-    ModelBuilder.MODEL_VERSION,
-    new ObjectId().toString(), 
     "abc1", 
     Vector("1", "2", "3"),
     Vector("url1", "url2"),
