@@ -1,8 +1,6 @@
 package hnct.fudivery.lib.mongodb
 
 import org.slf4j.LoggerFactory
-import play.api.libs.json._
-import com.owlike.genson._
 import org.json4s.jackson.Serialization
 import org.json4s.NoTypeHints
 import hnct.fudivery.lib.mongodb.model._
