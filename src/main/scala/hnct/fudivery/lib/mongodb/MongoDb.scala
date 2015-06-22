@@ -13,7 +13,7 @@ class MongoDb(host: String, port: Int, dbName: String) {
     if (cols.contains(name)) cols(name)
     else {
       val col = db(name)
-      cols += name -> col
+      cols = cols + (name -> col)
       col
     }
   }

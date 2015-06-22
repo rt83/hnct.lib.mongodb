@@ -17,25 +17,25 @@ object ConnectionTest extends App {
   
   val item = ItemM(
     "abc1", 
-    Seq("1", "2", "3"),
+    Seq(Pair("1", "2"), Pair("4", "5")),
     Seq("url1", "url2"),
     "Desc",
     Seq(
-      FeedbackE("fb1", "uid1", 0.3),
-      FeedbackE("fb2", "uid2", 0.2)
+      ("fb1", "uid1", 0.3),
+      ("fb2", "uid2", 0.2)
     ),
     Seq(
-      FoodTypeE("ft1", "id1"),
-      FoodTypeE("ft2", "id2")
+      Pair("ft1", "id1"),
+      Pair("ft2", "id2")
     ),
     Seq(
-      FoodCategoryE("fc1", "id1"),
-      FoodCategoryE("fc2", "id2")
+      Pair("fc1", "id1"),
+      Pair("fc2", "id2")
     ),
-    RestaurantE("resName", "resId", 100.0, 100.0, "resAddr"),
+    ("resName", "resId", 100.0, 100.0, "resAddr"),
     Seq(
-      DiscountProgramE("p1", "id1"),
-      DiscountProgramE("p2", "id2")
+      Pair("p1", "id1"),
+      Pair("p2", "id2")
     )
   )
 //  println(item.toJson)
