@@ -1,4 +1,4 @@
-package hnct.fudivery.lib.mongodb
+package hnct.fudivery.mongodb
 
 import com.mongodb.casbah.Imports._
 import hnct.fudivery.lib.mongodb.model.ModelBuilder
