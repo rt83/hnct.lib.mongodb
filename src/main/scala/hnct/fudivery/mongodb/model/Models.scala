@@ -261,9 +261,9 @@ object RankDimM {
   )
 }
 
-/* ----------------------------------- DiscountProgram model --------------------------------------- */
+/* ----------------------------------- Discount model --------------------------------------- */
 
-case class DiscountProgramM(
+case class DiscountM(
   modver: String,
   _id: String, 
   name: String, 
@@ -271,12 +271,12 @@ case class DiscountProgramM(
   discount: Double
 ) extends Serializable
 
-object DiscountProgramM {
+object DiscountM {
   def apply(
     name: String, 
     desc: String,
     discount: Double
-  ) = new DiscountProgramM(
+  ) = new DiscountM(
     ModelBuilder.MODEL_VERSION,
     new ObjectId().toString,
     name, desc, discount

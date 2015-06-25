@@ -3,14 +3,10 @@ package hnct.fudivery.lib.mongodb
 import org.slf4j.LoggerFactory
 import org.json4s.jackson.Serialization
 import org.json4s.NoTypeHints
-
-import hnct.fudivery.lib.mongodb.model._
-import hnct.fudivery.mongodb.MongoDb;
-import hnct.fudivery.mongodb.mongoDb;
-
+import hnct.fudivery.mongodb.MongoDb
 import org.bson.types.ObjectId
-
 import com.mongodb.casbah.commons.MongoDBObject
+import hnct.fudivery.mongodb.model._
 
 /**
  * @author tduccuong
