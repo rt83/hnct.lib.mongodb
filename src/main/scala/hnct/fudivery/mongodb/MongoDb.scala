@@ -1,7 +1,7 @@
 package hnct.fudivery.mongodb
 
 import com.mongodb.casbah.Imports._
-import hnct.fudivery.lib.mongodb.model.ModelBuilder
+import hnct.fudivery.mongodb.model.ModelBuilder
 
 class MongoDb(host: String, port: Int, dbName: String) {
   private val mongoClient = MongoClient(host, port)

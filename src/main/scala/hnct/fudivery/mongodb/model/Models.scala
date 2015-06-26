@@ -51,7 +51,7 @@ case class ItemM(
   foodTypes: Seq[Pair[String, String]], // Seq{(foodTypeName, foodTypeId)}
   foodCats: Seq[Pair[String, String]], // Seq{(foodCatName, foodCatId)}
   restaurant: Tuple5[String, String, Double, Double, String], // (resName, resId, (lat, lon), resAddr)
-  disProgs: Seq[Pair[String, String]] // Seq{(progName, progId)}
+  discounts: Seq[Pair[String, String]] // Seq{(progName, progId)}
 ) extends Serializable
 
 object ItemM {
@@ -64,11 +64,11 @@ object ItemM {
     foodTypes: Seq[Pair[String, String]], // Seq{(foodTypeName, foodTypeId)}
     foodCats: Seq[Pair[String, String]], // Seq{(foodCatName, foodCatId)}
     restaurant: Tuple5[String, String, Double, Double, String], // (resName, resId, (lat, lon), resAddr)
-    disProgs: Seq[Pair[String, String]] // Seq{(progName, progId)}
+    discounts: Seq[Pair[String, String]] // Seq{(progName, progId)}
   ) = new ItemM(
     ModelBuilder.MODEL_VERSION,
     new ObjectId().toString,
-    name, ingrds, photos, desc, feedbacks, foodTypes, foodCats, restaurant, disProgs
+    name, ingrds, photos, desc, feedbacks, foodTypes, foodCats, restaurant, discounts
   )
 }
 
@@ -223,21 +223,19 @@ object UserM {
 
 /* ----------------------------------- Role model --------------------------------------- */
 
-case class RoleM(
+case class UserRoleM(
   modver: String,
   _id: String, 
   name: String, 
   desc: String
 ) extends Serializable
 
-object RoleM {
+object UserRoleM {
   def apply(
     name: String, 
     desc: String
-  ) = new RoleM(
-    ModelBuilder.MODEL_VERSION,
-    new ObjectId().toString,
-    name, desc
+  ) = new UserRoleM(
+    ModelBuilder.MODEL_VERSION,    new ObjectId().toString,    name, desc
   )
 }
 
