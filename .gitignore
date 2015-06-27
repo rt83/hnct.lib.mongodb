@@ -11,3 +11,4 @@
 .cache
 /bin/
 /build/
+build-settings.properties

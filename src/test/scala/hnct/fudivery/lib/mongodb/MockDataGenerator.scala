@@ -1,16 +1,21 @@
 package hnct.fudivery.lib.mongodb
 
 import hnct.fudivery.mongodb.model._
-import hnct.fudivery.mongodb.MongoDb
 import scala.io.Source
 import scala.util.Random
+import hnct.lib.utility.Logable
+import hnct.fudivery.mongodb.MongoDb
 
 
 /**
  * @author tduccuong
  */
-object MockDataGenerator extends App {
+object MockDataGenerator extends App with Logable {
   val db = new MongoDb("localhost", 27017, "fudivery")
+  
+  // empty database before creating mock data
+  db.emptyDb
+  log.debug("db has been emptied!")
 
   var ingredients = Vector[IngredientM]()
   var foodTypes = Vector[FoodTypeM]()
@@ -21,7 +26,7 @@ object MockDataGenerator extends App {
   var roles = Vector[UserRoleM]()
   var rankDims = Vector[RankDimM]()
   var discounts = Vector[DiscountM]()
-  var items = Vector[ItemM]()
+  var items = Vector[FoodItemM]()
   
   val cols = Set[String](
     "IngredientM",
@@ -32,13 +37,15 @@ object MockDataGenerator extends App {
     "UserM",
     "RankDimM",
     "DiscountM",
-    "ItemM",
+    "FoodItemM",
     "UserRoleM"
   )
   
   val random = Random
   var col: String = null
-  for (line <- Source.fromFile("/home/tduccuong/Projects/hnct/hnct.fudivery.mongodb/src/main/resources/fudivery-mock.dat").getLines()) {
+//  for (line <- Source.fromFile("/home/tduccuong/Projects/hnct/hnct.fudivery.mongodb/src/main/resources/fudivery-mock.dat").getLines()) {
+  for (line <- Source.fromFile("/Users/tduccuong/Projects/hnct/hnct.fudivery.mongodb/src/main/resources/fudivery-mock.dat").getLines()) {
+  	log.debug("current line: "+line)
     if (!line.startsWith("#") && !line.isEmpty()) {
       if (cols.contains(line)) col = line
       else {
@@ -60,7 +67,7 @@ object MockDataGenerator extends App {
             users = users :+ UserM(param(0), param(1), param(2), param(3), Seq(roles(random.nextInt(roles.size))._id), Seq())
           case "RestaurantM" =>
             restaurants = restaurants :+ RestaurantM(param(0), "", param(1), param(2).toDouble, param(3).toDouble, "", Seq())
-          case "ItemM" => 
+          case "FoodItemM" => 
             val maxIngrd = 10
             var ingrds = Vector[Pair[String, String]]()
             for (i <- 1 to random.nextInt(maxIngrd)+1) {
@@ -95,7 +102,7 @@ object MockDataGenerator extends App {
             }
             
             val resInd = random.nextInt(restaurants.size)
-            items = items :+ ItemM(
+            items = items :+ FoodItemM(
                 param(0), 
                 ingrds, 
                 photos, 
@@ -112,7 +119,7 @@ object MockDataGenerator extends App {
   }
   
   // persist in db
-  items foreach { obj => db.useCol[ItemM].insert(obj.toDbObject) }
+  items foreach { obj => db.useCol[FoodItemM].insert(obj.toDbObject) }
   ingredients foreach { obj => db.useCol[IngredientM].insert(obj.toDbObject) }
   foodTypes foreach { obj => db.useCol[FoodTypeM].insert(obj.toDbObject) }
   foodCats foreach { obj => db.useCol[FoodCategoryM].insert(obj.toDbObject) }

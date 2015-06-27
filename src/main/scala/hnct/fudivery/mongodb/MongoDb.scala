@@ -9,6 +9,14 @@ class MongoDb(host: String, port: Int, dbName: String) {
   private val db = mongoClient(dbName)
   private var cols = Map[String, MongoCollection]()
   
+  /**
+   * Empty the database
+   */
+  def emptyDb = db.dropDatabase()
+  
+  /**
+   * Return a MongoDBCollection collection given its name
+   */
   def useCol(name: String) = {
     if (cols.contains(name)) cols(name)
     else {
@@ -18,6 +26,9 @@ class MongoDb(host: String, port: Int, dbName: String) {
     }
   }
   
+  /**
+   * Return a MongoDBCollection given its Scala class name
+   */
   def useCol[T](implicit tag: reflect.ClassTag[T]): MongoCollection = useCol(tag.runtimeClass.getSimpleName)
   
   /**
@@ -34,5 +45,12 @@ class MongoDb(host: String, port: Int, dbName: String) {
   def query[T](q: DBObject)(implicit tag: reflect.ClassTag[T]) = {
     val queryList = List(ModelBuilder.MODEL_QUERY, q)
     useCol(tag.runtimeClass.getSimpleName).find(MongoDBObject("$and" -> queryList)) 
+  }
+  
+  /**
+   * Query all documents in a collection
+   */
+  def query[T](implicit tag: reflect.ClassTag[T]) = {
+    useCol(tag.runtimeClass.getSimpleName).find() 
   }
 }

@@ -12,11 +12,9 @@ import hnct.fudivery.mongodb.model._
  * @author tduccuong
  */
 object ConnectionTest extends App {
-  val logger = LoggerFactory.getLogger("ConnectionTest")
-  
   val mongoDb = new MongoDb("localhost", 27017, "fudivery")
   
-  val item = ItemM(
+  val item = FoodItemM(
     "abc1", 
     Seq(Pair("1", "2"), Pair("4", "5")),
     Seq("url1", "url2"),
@@ -40,14 +38,13 @@ object ConnectionTest extends App {
     )
   )
 //  println(item.toJson)
-  val col = mongoDb.useCol[ItemM] 
+  val col = mongoDb.useCol[FoodItemM] 
   col.insert(item.toDbObject)
   
-  val query = MongoDBObject()
-  val all = mongoDb.query[ItemM](query)
+  val all = mongoDb.query[FoodItemM]
   for (doc <- all) {
 //    Console.println(doc)
-    val item = ModelBuilder.fromDbObject[ItemM](doc) 
+    val item = ModelBuilder.fromDbObject[FoodItemM](doc) 
     Console.println(item.toJson)
   }
 }

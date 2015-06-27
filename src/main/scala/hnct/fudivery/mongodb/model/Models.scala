@@ -12,7 +12,7 @@ import org.json4s.DefaultFormats
  * @author tduccuong
  */
 
-trait Serializable {
+trait BaseM {
   private val formats = DefaultFormats //Serialization.formats(NoTypeHints)
   
   def toJson = Serialization.writePretty(this)(formats)
@@ -40,7 +40,7 @@ case class Pair[T1, T2](_1: T1, _2: T2)
 
 /* --------------------------------------- Item model --------------------------------------- */
 
-case class ItemM(
+case class FoodItemM(
   modver: String,
   _id: String, 
   name: String, 
@@ -52,23 +52,21 @@ case class ItemM(
   foodCats: Seq[Pair[String, String]], // Seq{(foodCatName, foodCatId)}
   restaurant: Tuple5[String, String, Double, Double, String], // (resName, resId, (lat, lon), resAddr)
   discounts: Seq[Pair[String, String]] // Seq{(progName, progId)}
-) extends Serializable
+) extends BaseM
 
-object ItemM {
+object FoodItemM {
   def apply(
     name: String, 
-    ingrds: Seq[Pair[String, String]],
-    photos: Seq[String],
-    desc: String,
-    feedbacks: Seq[Tuple3[String, String, Double]], // Seq{(feedbackId, userId, rankingScore)}
-    foodTypes: Seq[Pair[String, String]], // Seq{(foodTypeName, foodTypeId)}
-    foodCats: Seq[Pair[String, String]], // Seq{(foodCatName, foodCatId)}
-    restaurant: Tuple5[String, String, Double, Double, String], // (resName, resId, (lat, lon), resAddr)
+    ingrds: Seq[Pair[String, String]], 
+    photos: Seq[String], 
+    desc: String, 
+    feedbacks: Seq[Tuple3[String, String, Double]],  // Seq{(feedbackId, userId, rankingScore, 
+    foodTypes: Seq[Pair[String, String]],  // Seq{(foodTypeName, foodTypeId, 
+    foodCats: Seq[Pair[String, String]],  // Seq{(foodCatName, foodCatId, 
+    restaurant: Tuple5[String, String, Double, Double, String],  // (resName, resId, (lat, lon), resAdd, 
     discounts: Seq[Pair[String, String]] // Seq{(progName, progId)}
-  ) = new ItemM(
-    ModelBuilder.MODEL_VERSION,
-    new ObjectId().toString,
-    name, ingrds, photos, desc, feedbacks, foodTypes, foodCats, restaurant, discounts
+  ) = new FoodItemM(
+    ModelBuilder.MODEL_VERSION,    new ObjectId().toString,    name, ingrds, photos, desc, feedbacks, foodTypes, foodCats, restaurant, discounts
   )
 }
 
@@ -79,7 +77,7 @@ case class IngredientM(
   _id: String, 
   name: String, 
   desc: String
-) extends Serializable
+) extends BaseM
 
 object IngredientM {
   def apply(
@@ -99,7 +97,7 @@ case class FoodTypeM(
   _id: String, 
   name: String, 
   desc: String
-) extends Serializable
+) extends BaseM
 
 object FoodTypeM {
   def apply(
@@ -119,7 +117,7 @@ case class FoodCategoryM(
   _id: String, 
   name: String, 
   desc: String
-) extends Serializable
+) extends BaseM
 
 object FoodCategoryM {
   def apply(
@@ -144,7 +142,7 @@ case class RestaurantM(
   lon: Double,
   chefCook: String,
   feedbacks: Seq[Tuple3[String, String, Double]] // (feedbackId, userId, rankingScore)
-) extends Serializable
+) extends BaseM
 
 object RestaurantM {
   def apply(
@@ -174,7 +172,7 @@ case class FeedbackM(
   comment: String,
   score: Double,
   rankDimId: String
-) extends Serializable
+) extends BaseM
 
 object FeedbackM {
   def apply(
@@ -204,7 +202,7 @@ case class UserM(
   accPwd: String,
   roles: Seq[String],
   feedbacks: Seq[Tuple4[String, String, String, Double]] // (feedbackId, userId, restaurantId, rankingScore)
-) extends Serializable
+) extends BaseM
 
 object UserM {
   def apply(
@@ -228,7 +226,7 @@ case class UserRoleM(
   _id: String, 
   name: String, 
   desc: String
-) extends Serializable
+) extends BaseM
 
 object UserRoleM {
   def apply(
@@ -246,7 +244,7 @@ case class RankDimM(
   _id: String, 
   name: String, 
   desc: String
-) extends Serializable
+) extends BaseM
 
 object RankDimM {
   def apply(
@@ -267,7 +265,7 @@ case class DiscountM(
   name: String, 
   desc: String,
   discount: Double
-) extends Serializable
+) extends BaseM
 
 object DiscountM {
   def apply(

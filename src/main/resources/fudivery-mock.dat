@@ -73,7 +73,7 @@ RestaurantM
 SenAsia,,0,0
 Le Quan,,0,0
 
-ItemM
+FoodItemM
 #format: Name
 asparagus
 apples
