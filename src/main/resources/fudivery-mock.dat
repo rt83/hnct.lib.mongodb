@@ -1,0 +1,162 @@
+# Order (which comes first) is very important!!
+# seperator = ','
+
+IngredientM
+# format: Name, Desc
+Noodle, 
+Chily, 
+Chicken, 
+Garlic, 
+ginger, 
+gnocchi, 
+goose, 
+granola, 
+grapes, 
+green beans, 
+Guancamole, 
+gumbo, 
+grits, 
+Graham crackers, 
+Quesadilla, 
+Quiche, 
+Reuben, 
+Spinach, 
+Spaghetti, 
+Tater tots, 
+Toast, 
+Venison, 
+Waffles, 
+Wine, 
+Walnuts, 
+Yogurt, 
+Ziti, 
+Zucchini, 
+
+FoodTypeM
+#format: Name, Desc
+Starter, 
+Main course, 
+Breakfast, 
+Lunch, 
+
+FoodCategoryM
+#format: Name, Desc
+Asiatisch, 
+Grillen, 
+Seafood, 
+Soup, 
+
+RankDimM
+#format: Name, Desc
+Food taste, 
+Service, 
+Bio, 
+
+DiscountM
+#format: Name, Desc, Discount
+Sommer,,0.15
+New open,, 0.20
+
+UserRoleM
+# format: Name, Desc
+User, User of Fudivery
+Customer, Restaurant registered with Fudivery
+Admin, Administrator of Fudivery
+
+UserM
+#format: Name, Addr, AccName, AccPwd
+tduccuong,,tduccuong,tduccuong
+ryan,,ryan,ryan
+
+RestaurantM
+#format: Name, Addr, Lat, Lon
+SenAsia,,0,0
+Le Quan,,0,0
+
+ItemM
+#format: Name
+asparagus
+apples
+avacado
+alfalfa
+acorn squash  (NOPE: this is actually an ‘S’)
+almond
+arugala
+artichoke
+applesauce
+asian noodles (NOPE, an ‘N’)
+antelope
+ahi tuna (NOPE: this is actually a ‘T’)
+albacore tuna
+Apple juice
+Avocado roll
+Cabbage
+cake
+carrots
+carne asada
+celery
+cheese
+chicken
+catfish
+chips
+chocolate
+chowder
+clams
+coffee
+cookies
+corn
+cupcakes
+crab
+curry
+cereal
+chimichanga
+eggs
+enchilada
+eggrolls
+English muffins
+edimame
+eel sushi
+fajita
+falafel
+fish  (might be too vague)
+franks
+fondu
+French toast
+French dip
+ham
+halibut
+hamburger (and cheeseburgers and bacon cheeseburgers)
+honey
+huenos rancheros
+hash browns
+hot dogs
+haiku roll
+hummus
+ice cream
+Irish stew
+Indian food
+Italian bread
+jambalaya
+jelly / jam
+jerky
+jalapeño
+kale
+kabobs
+ketchup
+kiwi
+kidney beans
+kingfish
+lobster
+Lamb
+Linguine
+Lasagna
+Meatballs
+Moose
+Milk
+Milkshake
+Noodles
+Ostrich
+Pizza
+Pepperoni
+Porter
+Pancakes

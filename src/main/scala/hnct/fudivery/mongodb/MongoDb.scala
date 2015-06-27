@@ -1,7 +1,7 @@
-package hnct.fudivery.lib.mongodb
+package hnct.fudivery.mongodb
 
 import com.mongodb.casbah.Imports._
-import hnct.fudivery.lib.mongodb.model.ModelBuilder
+import hnct.fudivery.mongodb.model.ModelBuilder
 
 class MongoDb(host: String, port: Int, dbName: String) {
   private val mongoClient = MongoClient(host, port)
@@ -13,7 +13,7 @@ class MongoDb(host: String, port: Int, dbName: String) {
     if (cols.contains(name)) cols(name)
     else {
       val col = db(name)
-      cols += name -> col
+      cols = cols + (name -> col)
       col
     }
   }
