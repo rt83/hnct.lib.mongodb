@@ -43,8 +43,8 @@ object MockDataGenerator extends App with Logable {
   
   val random = Random
   var col: String = null
-//  for (line <- Source.fromFile("/home/tduccuong/Projects/hnct/hnct.fudivery.mongodb/src/main/resources/fudivery-mock.dat").getLines()) {
-  for (line <- Source.fromFile("/Users/tduccuong/Projects/hnct/hnct.fudivery.mongodb/src/main/resources/fudivery-mock.dat").getLines()) {
+  for (line <- Source.fromFile("/home/tduccuong/Projects/hnct/hnct.fudivery.mongodb/src/main/resources/fudivery-mock.dat").getLines()) {
+//  for (line <- Source.fromFile("/Users/tduccuong/Projects/hnct/hnct.fudivery.mongodb/src/main/resources/fudivery-mock.dat").getLines()) {
   	log.debug("current line: "+line)
     if (!line.startsWith("#") && !line.isEmpty()) {
       if (cols.contains(line)) col = line
