@@ -13,4 +13,7 @@ dependencies {
 
 	compile 'org.json4s:json4s-jackson_2.11:3.2.11'
 	
+	projDependency ':hnct.lib.utility'
+	prod 'hnct.lib:hnct.lib.utility:1.0.0'
+	
 }
