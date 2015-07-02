@@ -5,7 +5,13 @@ import scala.io.Source
 import scala.util.Random
 import hnct.lib.utility.Logable
 import hnct.fudivery.mongodb.MongoDb
+import hnct.lib.config.Configuration
+import hnct.lib.config.ConfigurationFormat
 
+
+case class MockDataConfig(
+    dataFile : String
+)
 
 /**
  * @author tduccuong
@@ -43,7 +49,13 @@ object MockDataGenerator extends App with Logable {
   
   val random = Random
   var col: String = null
-  for (line <- Source.fromFile("/home/tduccuong/Projects/hnct/hnct.fudivery.mongodb/src/main/resources/fudivery-mock.dat").getLines()) {
+  
+  
+  val config = Configuration.read("conf/test/mockdataconfig.json", classOf[MockDataConfig], ConfigurationFormat.JSON)
+  
+  val fileName = config.getOrElse(throw new RuntimeException("Can't find configuration file")).dataFile
+  
+  for (line <- Source.fromFile(fileName).getLines()) {
 //  for (line <- Source.fromFile("/Users/tduccuong/Projects/hnct/hnct.fudivery.mongodb/src/main/resources/fudivery-mock.dat").getLines()) {
   	log.debug("current line: "+line)
     if (!line.startsWith("#") && !line.isEmpty()) {
