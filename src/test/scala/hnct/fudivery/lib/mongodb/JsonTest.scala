@@ -1,7 +1,7 @@
 package hnct.fudivery.lib.mongodb
 
-import org.json4s.jackson.JsonMethods._
-import org.json4s.JsonDSL.WithDouble._
+import org.json4s.jackson.Serialization
+import org.json4s.NoTypeHints
 import hnct.fudivery.mongodb.MongoDb
 import org.bson.types.ObjectId
 import com.mongodb.casbah.commons.MongoDBObject
@@ -29,7 +29,8 @@ object ConnectionTest extends App {
       .toIndexedSeq
     
     /* Serialize data */
-    val result = ("foodItems" -> ModelBuilder.listToJson(foodItems)) ~
-                 ("restaurants" -> ModelBuilder.listToJson(restaurants))
-    println(compact(render(result)))
+    implicit val formats = Serialization.formats(NoTypeHints)
+    case class Result(foodItems: Seq[FoodItemM], restaurants: Seq[RestaurantM])
+    val result = Serialization.writePretty(Result(foodItems, restaurants))
+    println(result)
 }

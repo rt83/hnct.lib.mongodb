@@ -1,6 +1,5 @@
 package hnct.fudivery.mongodb.model
 
-import org.json4s.jackson.JsonMethods._
 import org.json4s.jackson.Serialization
 import org.json4s.NoTypeHints
 import com.mongodb.util.JSON
@@ -24,10 +23,6 @@ object ModelBuilder {
   def fromJson[T](json: String)(implicit m: Manifest[T]) = Serialization.read[T](json)
   
   def fromDbObject[T](dbo: DBObject)(implicit m: Manifest[T]) = fromJson[T](dbo.toString())
-  
-  def listToJson[T](modelList: Seq[T])(implicit m: Manifest[T]) = Serialization.writePretty(modelList)
-  
-  def listToJsonVal[T](modelList: Seq[T])(implicit m: Manifest[T]) = render[T](modelList)
 }
 
 trait BaseM {
