@@ -56,7 +56,7 @@ object MockDataGenerator extends App with Logable {
   val fileName = config.getOrElse(throw new RuntimeException("Can't find configuration file")).dataFile
   
   for (line <- Source.fromFile(fileName).getLines()) {
-//  for (line <- Source.fromFile("/Users/tduccuong/Projects/hnct/hnct.fudivery.mongodb/src/main/resources/fudivery-mock.dat").getLines()) {
+//  for (line <- Source.fromFile("/home/tduccuong/Projects/hnct/hnct.fudivery.mongodb/src/main/resources/fudivery-mock.dat").getLines()) {
   	log.debug("current line: "+line)
     if (!line.startsWith("#") && !line.isEmpty()) {
       if (cols.contains(line)) col = line
