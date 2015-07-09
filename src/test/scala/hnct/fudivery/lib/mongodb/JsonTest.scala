@@ -12,25 +12,8 @@ import hnct.fudivery.mongodb.model._
  */
 object ConnectionTest extends App {
   val db = new MongoDb("localhost", 27017, "fudivery")
-  
-//  val restaurants = db.query[RestaurantM]
-//      .map(ModelBuilder.fromDbObject[RestaurantM](_))
-//      .toIndexedSeq
-//  val json = ModelBuilder.listToJson(restaurants)
-//  println(json)
-  
-  val foodItems = db.query[FoodItemM]
-      .limit(2)
-      .map(ModelBuilder.fromDbObject[FoodItemM](_))
-      .toIndexedSeq
-    val restaurants = db.query[RestaurantM]
-      .limit(2)
-      .map(ModelBuilder.fromDbObject[RestaurantM](_))
-      .toIndexedSeq
-    
-    /* Serialize data */
-    implicit val formats = Serialization.formats(NoTypeHints)
-    case class Result(foodItems: Seq[FoodItemM], restaurants: Seq[RestaurantM])
-    val result = Serialization.writePretty(Result(foodItems, restaurants))
-    println(result)
+  val items = db.query[FoodItemM].limit(1).map(ModelBuilder.fromDbObject[FoodItemM](_)).toIndexedSeq
+  val fi = items(0)
+  db.getFile(fi._id+ModelBuilder.IMG_FILENAME_SEPERATOR+fi.photos(0)).get.writeTo("/Users/tduccuong/Temp/test.jpg")
+  println("completed")
 }
