@@ -14,6 +14,7 @@ import org.bson.types.ObjectId
 object ModelBuilder {
   // every model must be bound with a version to prevent inconsistency when loading data from db
   val MODEL_VERSION = "0.0.1"
+  val IMG_FILENAME_SEPERATOR = "___"
   
   // this query will always prepended to any query in our system to ensure that only models of the current version will be loaded
   val MODEL_QUERY = MongoDBObject("modver" -> MODEL_VERSION)
@@ -95,17 +96,19 @@ case class FoodTypeM(
   modver: String,
   _id: String, 
   name: String, 
-  desc: String
+  desc: String,
+  photos: Seq[String]
 ) extends BaseM
 
 object FoodTypeM {
   def apply(
     name: String, 
-    desc: String
+    desc: String,
+    photos: Seq[String]
   ) = new FoodTypeM(
     ModelBuilder.MODEL_VERSION,
     new ObjectId().toString,
-    name, desc
+    name, desc, photos
   )
 }
 
@@ -115,17 +118,19 @@ case class FoodCategoryM(
   modver: String,
   _id: String, 
   name: String, 
-  desc: String
+  desc: String,
+  photos: Seq[String]
 ) extends BaseM
 
 object FoodCategoryM {
   def apply(
     name: String, 
-    desc: String
+    desc: String,
+    photos: Seq[String]
   ) = new FoodCategoryM(
     ModelBuilder.MODEL_VERSION,
     new ObjectId().toString,
-    name, desc
+    name, desc, photos
   )
 }
 
@@ -136,6 +141,7 @@ case class RestaurantM(
   _id: String, 
   name: String, 
   intro: String,
+  photos: Seq[String],
   addr: String,
   lat: Double,
   lon: Double,
@@ -147,6 +153,7 @@ object RestaurantM {
   def apply(
     name: String, 
     intro: String,
+    photos: Seq[String],
     addr: String,
     lat: Double,
     lon: Double,
@@ -155,7 +162,7 @@ object RestaurantM {
   ) = new RestaurantM(
     ModelBuilder.MODEL_VERSION,
     new ObjectId().toString,
-    name, intro, addr, lat, lon, chefCook, feedbacks
+    name, intro, photos, addr, lat, lon, chefCook, feedbacks
   )
 }
 
@@ -195,7 +202,8 @@ object FeedbackM {
 case class UserM(
   modver: String,
   _id: String, 
-  name: String, 
+  name: String,
+  photos: Seq[String],
   addr: String,
   accName: String,
   accPwd: String,
@@ -206,6 +214,7 @@ case class UserM(
 object UserM {
   def apply(
     name: String, 
+    photos: Seq[String],
     addr: String,
     accName: String,
     accPwd: String,
@@ -214,7 +223,7 @@ object UserM {
   ) = new UserM(
     ModelBuilder.MODEL_VERSION,
     new ObjectId().toString,
-    name, addr, accName, accPwd, roles, feedbacks
+    name, photos, addr, accName, accPwd, roles, feedbacks
   )
 }
 
@@ -263,6 +272,7 @@ case class DiscountM(
   _id: String, 
   name: String, 
   desc: String,
+  photos: Seq[String],
   discount: Double
 ) extends BaseM
 
@@ -270,10 +280,11 @@ object DiscountM {
   def apply(
     name: String, 
     desc: String,
+    photos: Seq[String],
     discount: Double
   ) = new DiscountM(
     ModelBuilder.MODEL_VERSION,
     new ObjectId().toString,
-    name, desc, discount
+    name, desc, photos, discount
   )
 }

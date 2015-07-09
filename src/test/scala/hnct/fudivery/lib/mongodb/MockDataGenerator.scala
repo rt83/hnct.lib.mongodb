@@ -10,7 +10,8 @@ import hnct.lib.config.ConfigurationFormat
 
 
 case class MockDataConfig(
-    dataFile : String
+    dataFile : String,
+    imgFolder: String
 )
 
 /**
@@ -54,6 +55,14 @@ object MockDataGenerator extends App with Logable {
   val config = Configuration.read("conf/test/mockdataconfig.json", classOf[MockDataConfig], ConfigurationFormat.JSON)
   
   val fileName = config.getOrElse(throw new RuntimeException("Can't find configuration file")).dataFile
+  val imgFolder = config.getOrElse(throw new RuntimeException("Can't find configuration file")).imgFolder
+  
+  def strArrayGen(base: String, nElem: Int, maxElem: Int) = {
+    var strArr = Vector[String]()
+    for (i <- 1 to random.nextInt(nElem))
+      strArr = strArr :+ base + random.nextInt(maxElem)
+    strArr
+  }
   
   for (line <- Source.fromFile(fileName).getLines()) {
 //  for (line <- Source.fromFile("/home/tduccuong/Projects/hnct/hnct.fudivery.mongodb/src/main/resources/fudivery-mock.dat").getLines()) {
@@ -65,20 +74,28 @@ object MockDataGenerator extends App with Logable {
         col match {
           case "IngredientM" => 
             ingredients = ingredients :+ IngredientM(param(0), param(1))
+          
           case "FoodTypeM" => 
-            foodTypes = foodTypes :+ FoodTypeM(param(0), param(1))
+            foodTypes = foodTypes :+ FoodTypeM(param(0), param(1), strArrayGen("photo", 2, 100))
+            
           case "FoodCategoryM" => 
-            foodCats = foodCats :+ FoodCategoryM(param(0), param(1))
+            foodCats = foodCats :+ FoodCategoryM(param(0), param(1), strArrayGen("photo", 3, 100))
+          
           case "UserRoleM" => 
             roles = roles :+ UserRoleM(param(0), param(1))
+          
           case "RankDimM" => 
             rankDims = rankDims :+ RankDimM(param(0), param(1))
+          
           case "DiscountM" => 
-            discounts = discounts :+ DiscountM(param(0), param(1), param(2).toDouble)
+            discounts = discounts :+ DiscountM(param(0), param(1), strArrayGen("photo", 2, 100), param(2).toDouble)
+          
           case "UserM" => 
-            users = users :+ UserM(param(0), param(1), param(2), param(3), Seq(roles(random.nextInt(roles.size))._id), Seq())
+            users = users :+ UserM(param(0), strArrayGen("photo", 3, 100), param(1), param(2), param(3), Seq(roles(random.nextInt(roles.size))._id), Seq())
+          
           case "RestaurantM" =>
-            restaurants = restaurants :+ RestaurantM(param(0), "", param(1), param(2).toDouble, param(3).toDouble, "", Seq())
+            restaurants = restaurants :+ RestaurantM(param(0), "", strArrayGen("photo", 3, 100), param(1), param(2).toDouble, param(3).toDouble, "", Seq())
+          
           case "FoodItemM" => 
             val maxIngrd = 10
             var ingrds = Vector[Pair[String, String]]()
@@ -87,11 +104,6 @@ object MockDataGenerator extends App with Logable {
               ingrds = ingrds :+ Pair(ingredients(index).name, ingredients(index)._id)
             }
             
-            val maxPhoto = 6
-            var photos = Vector[String]()
-            for (i <- 1 to random.nextInt(maxPhoto))
-              photos = photos :+ "photo" + i
-              
             val maxFoodType = 3
             var fts = Vector[Pair[String, String]]()
             for (i <- 1 to random.nextInt(maxFoodType)+1) {
@@ -117,7 +129,7 @@ object MockDataGenerator extends App with Logable {
             items = items :+ FoodItemM(
                 param(0), 
                 ingrds, 
-                photos, 
+                strArrayGen("photo", 6, 100), 
                 "", 
                 Seq(), 
                 fts,
@@ -130,16 +142,48 @@ object MockDataGenerator extends App with Logable {
     }
   }
   
+  def saveImgs(objId: String, imgs: Seq[String]) = {
+    imgs foreach { img => db.saveFile(imgFolder+"/"+objId+ModelBuilder.IMG_FILENAME_SEPERATOR+img+".png", img) }
+  }
+  
   // persist in db
-  items foreach { obj => db.useCol[FoodItemM].insert(obj.toDbObject) }
-  ingredients foreach { obj => db.useCol[IngredientM].insert(obj.toDbObject) }
-  foodTypes foreach { obj => db.useCol[FoodTypeM].insert(obj.toDbObject) }
-  foodCats foreach { obj => db.useCol[FoodCategoryM].insert(obj.toDbObject) }
+  items foreach { obj => 
+    db.useCol[FoodItemM].insert(obj.toDbObject)
+    saveImgs(obj._id, obj.photos)
+  }
+  
+  ingredients foreach { obj => 
+    db.useCol[IngredientM].insert(obj.toDbObject) 
+  }
+  
+  foodTypes foreach { 
+    obj => db.useCol[FoodTypeM].insert(obj.toDbObject)
+    saveImgs(obj._id, obj.photos)
+  }
+  
+  foodCats foreach { obj => 
+    db.useCol[FoodCategoryM].insert(obj.toDbObject)
+    saveImgs(obj._id, obj.photos)
+  }
+  
   roles foreach { obj => db.useCol[UserRoleM].insert(obj.toDbObject) }
-  users foreach { obj => db.useCol[UserM].insert(obj.toDbObject) }
+  
+  users foreach { obj => 
+    db.useCol[UserM].insert(obj.toDbObject)
+    saveImgs(obj._id, obj.photos)
+  }
+  
   rankDims foreach { obj => db.useCol[RankDimM].insert(obj.toDbObject) }
-  restaurants foreach { obj => db.useCol[RestaurantM].insert(obj.toDbObject) }
-  discounts foreach { obj => db.useCol[DiscountM].insert(obj.toDbObject) }
+  
+  restaurants foreach { obj => 
+    db.useCol[RestaurantM].insert(obj.toDbObject)
+    saveImgs(obj._id, obj.photos)
+  }
+  
+  discounts foreach { obj => 
+    db.useCol[DiscountM].insert(obj.toDbObject)
+    saveImgs(obj._id, obj.photos)
+  }
   
   println("completed!")
 }

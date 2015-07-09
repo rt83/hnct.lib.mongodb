@@ -2,12 +2,19 @@ package hnct.fudivery.mongodb
 
 import com.mongodb.casbah.Imports._
 import hnct.fudivery.mongodb.model.ModelBuilder
+import com.mongodb.casbah.gridfs.GridFS
+import java.io.File
+import java.io.FileInputStream
+import com.mongodb.casbah.gridfs.GridFSDBFile
 
 class MongoDb(host: String, port: Int, dbName: String) {
   private val mongoClient = MongoClient(host, port)
   
   private val db = mongoClient(dbName)
   private var cols = Map[String, MongoCollection]()
+  
+  /* GridFS for storing binaries (including images) */
+  val gridFs = GridFS(db);
   
   /**
    * Empty the database
@@ -53,4 +60,23 @@ class MongoDb(host: String, port: Int, dbName: String) {
   def query[T](implicit tag: reflect.ClassTag[T]) = {
     useCol(tag.runtimeClass.getSimpleName).find() 
   }
+  
+  /**
+   * Save binary file to db.
+   */
+  def saveFile(fileName: String, fileNameInDb: String) = {
+    val fileInputStream =new FileInputStream(new File(fileName))
+    val gfsFile = gridFs.createFile(fileInputStream)
+    gfsFile.filename = fileNameInDb
+    gfsFile.save()
+  }
+  
+  def getFile(fileNameInDb: String): Option[GridFSDBFile] = {
+    gridFs.findOne(fileNameInDb)
+  }
+  
+  def deleteFile(fileNameInDb: String) = {
+    gridFs.remove(fileNameInDb)
+  } 
+  
 }
