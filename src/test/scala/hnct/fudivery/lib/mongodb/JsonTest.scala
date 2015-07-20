@@ -14,6 +14,7 @@ object ConnectionTest extends App {
   val db = new MongoDb("localhost", 27017, "fudivery")
   val items = db.query[FoodItemM].limit(1).map(ModelBuilder.fromDbObject[FoodItemM](_)).toIndexedSeq
   val fi = items(0)
-  db.getFile(fi._id+ModelBuilder.IMG_FILENAME_SEPERATOR+fi.photos(0)).get.writeTo("/Users/tduccuong/Temp/test.jpg")
+  println(fi.toJson)
+//  db.getFile(fi._id+ModelBuilder.IMG_FILENAME_SEPERATOR+fi.photos(0)).get.writeTo("/Users/tduccuong/Temp/test.jpg")
   println("completed")
 }

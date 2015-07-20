@@ -17,6 +17,11 @@ class MongoDb(host: String, port: Int, dbName: String) {
   val gridFs = GridFS(db);
   
   /**
+   * Close the current connection
+   */
+  def closeDb = mongoClient.close()
+  
+  /**
    * Empty the database
    */
   def emptyDb = db.dropDatabase()
