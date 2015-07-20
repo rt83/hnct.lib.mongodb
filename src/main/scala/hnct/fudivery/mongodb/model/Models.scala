@@ -44,7 +44,7 @@ abstract class AbstractM(val modver: String, val _id: String)
 
 case class FoodItemM(
 	name: String, 
-  ingrds: Seq[Pair[String, String]],
+  ingrds: Seq[Pair[String, String]], 
   photos: Seq[String],
   desc: String,
   feedbacks: Seq[Tuple3[String, String, Double]], // Seq{(feedbackId, userId, rankingScore)}
