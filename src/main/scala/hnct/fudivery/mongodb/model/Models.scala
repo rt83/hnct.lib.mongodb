@@ -6,6 +6,7 @@ import com.mongodb.util.JSON
 import com.mongodb.DBObject
 import com.mongodb.casbah.commons.MongoDBObject
 import org.bson.types.ObjectId
+import com.github.nscala_time.time.Imports._
 
 /**
  * @author tduccuong
@@ -38,44 +39,41 @@ trait BaseM {
 
 case class Pair[T1, T2](_1: T1, _2: T2)
 
-abstract class AbstractM(val modver: String, val _id: String)
+abstract class AbstractM {
+  val modver: String = ModelBuilder.MODEL_VERSION
+  val _id: String =  new ObjectId().toString
+  val created: String = LocalDateTime.now.toString()
+}
+
+/* ------------------------------------- Food Dimension ------------------------------------- */
+
+case class FoodDimensionM (
+  name: String,
+  desc: String,
+  priority: Int,
+  orderCount: Long,
+  viewCount: Long
+) extends AbstractM with BaseM
+
+case class FoodDimensionKeyword (
+  name: String,
+  foodDimId: String, // ID of the FoodDimension that this keyword belongs to
+  relateds: Seq[String], // array of IDs of related FoodDimensionKeywords
+  orderCount: Long,
+  viewCount: Long,
+  msFunc: Seq[Pair[Double, Double]] // membership function of this keyword for future fuzzy search
+) extends AbstractM with BaseM
 
 /* --------------------------------------- Item model --------------------------------------- */
 
-case class FoodItemM(
+case class FoodItemM (
 	name: String, 
-  ingrds: Seq[Pair[String, String]], 
+	desc: String,
   photos: Seq[String],
-  desc: String,
   feedbacks: Seq[Tuple3[String, String, Double]], // Seq{(feedbackId, userId, rankingScore)}
-  foodTypes: Seq[Pair[String, String]], // Seq{(foodTypeName, foodTypeId)}
-  foodCats: Seq[Pair[String, String]], // Seq{(foodCatName, foodCatId)}
   restaurant: Tuple5[String, String, Double, Double, String], // (resName, resId, (lat, lon), resAddr)
   discounts: Seq[Pair[String, String]] // Seq{(progName, progId)}
-) extends AbstractM(ModelBuilder.MODEL_VERSION, new ObjectId().toString) with BaseM
-
-/* ----------------------------------- Ingredient model --------------------------------------- */
-
-case class IngredientM(
-  name: String, 
-  desc: String
-) extends AbstractM(ModelBuilder.MODEL_VERSION, new ObjectId().toString) with BaseM
-
-/* ----------------------------------- FoodType model --------------------------------------- */
-
-case class FoodTypeM(
-  name: String, 
-  desc: String,
-  photos: Seq[String]
-) extends AbstractM(ModelBuilder.MODEL_VERSION, new ObjectId().toString) with BaseM
-
-/* ----------------------------------- FoodCategory model --------------------------------------- */
-
-case class FoodCategoryM(
-  name: String, 
-  desc: String,
-  photos: Seq[String]
-) extends AbstractM(ModelBuilder.MODEL_VERSION, new ObjectId().toString) with BaseM
+) extends AbstractM with BaseM
 
 /* ----------------------------------- Restaurant model --------------------------------------- */
 
@@ -88,9 +86,15 @@ case class RestaurantM(
   lon: Double,
   chefCook: String,
   feedbacks: Seq[Tuple3[String, String, Double]] // (feedbackId, userId, rankingScore)
-) extends AbstractM(ModelBuilder.MODEL_VERSION, new ObjectId().toString) with BaseM
+) extends AbstractM with BaseM
 
 /* ----------------------------------- Feedback model --------------------------------------- */
+
+object RankingDimension extends Enumeration {
+  val SATISFACTION = Value("satisfaction")
+  val TASTE = Value("taste")
+  val HEALTHINESS = Value("healthiness")
+}
 
 case class FeedbackM(
   userId: String, 
@@ -99,10 +103,16 @@ case class FeedbackM(
   time: String,
   comment: String,
   score: Double,
-  rankDimId: String
-) extends AbstractM(ModelBuilder.MODEL_VERSION, new ObjectId().toString) with BaseM
+  rankDimId: RankingDimension.Value
+) extends AbstractM with BaseM
 
 /* ----------------------------------- User model --------------------------------------- */
+
+object UserRole extends Enumeration {
+  val ADMIN = Value("admin")
+  val USER = Value("user")
+  val CUSTOMER = Value("customer") // customer refers to restaurant or someone who can cook and provide food for our system.
+}
 
 case class UserM(
   name: String,
@@ -110,23 +120,8 @@ case class UserM(
   addr: String,
   accName: String,
   accPwd: String,
-  roles: Seq[String],
-  feedbacks: Seq[Tuple4[String, String, String, Double]] // (feedbackId, userId, restaurantId, rankingScore)
-) extends AbstractM(ModelBuilder.MODEL_VERSION, new ObjectId().toString) with BaseM
-
-/* ----------------------------------- Role model --------------------------------------- */
-
-case class UserRoleM(
-  name: String, 
-  desc: String
-) extends AbstractM(ModelBuilder.MODEL_VERSION, new ObjectId().toString) with BaseM
-
-/* ----------------------------------- RankingDimension model --------------------------------------- */
-
-case class RankDimM(
-  name: String, 
-  desc: String
-) extends AbstractM(ModelBuilder.MODEL_VERSION, new ObjectId().toString) with BaseM
+  roles: Seq[UserRole.Value]
+) extends AbstractM with BaseM
 
 /* ----------------------------------- Discount model --------------------------------------- */
 
@@ -135,4 +130,4 @@ case class DiscountM(
   desc: String,
   photos: Seq[String],
   discount: Double
-) extends AbstractM(ModelBuilder.MODEL_VERSION, new ObjectId().toString) with BaseM
+) extends AbstractM with BaseM
