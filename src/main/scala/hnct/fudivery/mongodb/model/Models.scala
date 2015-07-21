@@ -55,10 +55,9 @@ case class FoodDimensionM (
   viewCount: Long
 ) extends AbstractM with BaseM
 
-case class FoodDimensionKeyword (
+case class FoodDimensionKeywordM (
   name: String,
   foodDimId: String, // ID of the FoodDimension that this keyword belongs to
-  relateds: Seq[String], // array of IDs of related FoodDimensionKeywords
   orderCount: Long,
   viewCount: Long,
   msFunc: Seq[Pair[Double, Double]] // membership function of this keyword for future fuzzy search
@@ -66,13 +65,28 @@ case class FoodDimensionKeyword (
 
 /* --------------------------------------- Item model --------------------------------------- */
 
+case class FeedbackE (
+  id: String,
+  userId: String,
+  rank: Double,
+  comment: String
+)
+
+case class RestaurantE (
+  id: String,
+  name: String,
+  loc: Pair[Double, Double],
+  addr: String
+)
+
 case class FoodItemM (
 	name: String, 
 	desc: String,
   photos: Seq[String],
-  feedbacks: Seq[Tuple3[String, String, Double]], // Seq{(feedbackId, userId, rankingScore)}
-  restaurant: Tuple5[String, String, Double, Double, String], // (resName, resId, (lat, lon), resAddr)
-  discounts: Seq[Pair[String, String]] // Seq{(progName, progId)}
+  keywords: Seq[String], // list of keyword IDs
+  feedbacks: Seq[FeedbackE], // Seq{(feedbackId, userId, rankingScore)}
+  restaurant: RestaurantE,
+  disProgs: Seq[String] // list of discount programs
 ) extends AbstractM with BaseM
 
 /* ----------------------------------- Restaurant model --------------------------------------- */
@@ -85,12 +99,12 @@ case class RestaurantM(
   lat: Double,
   lon: Double,
   chefCook: String,
-  feedbacks: Seq[Tuple3[String, String, Double]] // (feedbackId, userId, rankingScore)
+  feedbacks: Seq[FeedbackE]
 ) extends AbstractM with BaseM
 
 /* ----------------------------------- Feedback model --------------------------------------- */
 
-object RankingDimension extends Enumeration {
+object RankDim extends Enumeration {
   val SATISFACTION = Value("satisfaction")
   val TASTE = Value("taste")
   val HEALTHINESS = Value("healthiness")
@@ -103,7 +117,7 @@ case class FeedbackM(
   time: String,
   comment: String,
   score: Double,
-  rankDimId: RankingDimension.Value
+  rankDimId: RankDim.Value
 ) extends AbstractM with BaseM
 
 /* ----------------------------------- User model --------------------------------------- */

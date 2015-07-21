@@ -1,162 +1,69 @@
 # Order (which comes first) is very important!!
 # seperator = ','
 
-IngredientM
-# format: Name, Desc
-Noodle, 
-Chily, 
-Chicken, 
-Garlic, 
-ginger, 
-gnocchi, 
-goose, 
-granola, 
-grapes, 
-green beans, 
-Guancamole, 
-gumbo, 
-grits, 
-Graham crackers, 
-Quesadilla, 
-Quiche, 
-Reuben, 
-Spinach, 
-Spaghetti, 
-Tater tots, 
-Toast, 
-Venison, 
-Waffles, 
-Wine, 
-Walnuts, 
-Yogurt, 
-Ziti, 
-Zucchini, 
-
-FoodTypeM
-#format: Name, Desc
-Starter, 
-Main course, 
-Breakfast, 
-Lunch, 
-
-FoodCategoryM
-#format: Name, Desc
-Asiatisch, 
-Grillen, 
-Seafood, 
-Soup, 
-
-RankDimM
-#format: Name, Desc
-Food taste, 
-Service, 
-Bio, 
-
-DiscountM
-#format: Name, Desc, Discount
-Sommer,,0.15
-New open,, 0.20
-
-UserRoleM
-# format: Name, Desc
-User, User of Fudivery
-Customer, Restaurant registered with Fudivery
-Admin, Administrator of Fudivery
-
-UserM
-#format: Name, Addr, AccName, AccPwd
-tduccuong,,tduccuong,tduccuong
-ryan,,ryan,ryan
-
 RestaurantM
-#format: Name, Addr, Lat, Lon
-SenAsia,,0,0
-Le Quan,,0,0
+#format: Name, Lat, Lon
+SenAsia,0,0
+Le Quan,0,0
+
+FoodDimensionM
+#format: Name
+Food category
+Location style
+Cooking style
+Meal type
+Ingredient
+
+FoodDimensionKeywordM
+#format: FoodDimensionM, Name 
+Location style, Hanoi
+Location style, Hue
+Location style, Italy
+Location style, Bac Trung Bo
+Location style, Mien nam
+Location style, Asian
+Food category, Pizza
+Food category, Pasta
+Food category, Nem nuong
+Food category, Pho
+Food category, Bun
+Cooking style, Grilled
+Cooking style, Nuong
+Cooking style, Baked
+Cooking style, Steamed
+Meal type, Starter
+Meal type, Main course 
+Meal type, Breakfast 
+Meal type, Lunch
+Meal type, Dinner
+Ingredient, Chily
+Ingredient, Beaf
+Ingredient, Thit bo
+Ingredient, Chicken
+Ingredient, Thit ga
+Ingredient, Bun
+Ingredient, Pho
 
 FoodItemM
-#format: Name
-asparagus
-apples
-avacado
-alfalfa
-acorn squash
-almond
-arugala
-artichoke
-applesauce
-asian noodles
-antelope
-ahi tuna
-albacore tuna
-Apple juice
-Avocado roll
-Cabbage
-cake
-carrots
-carne asada
-celery
-cheese
-chicken
-catfish
-chips
-chocolate
-chowder
-clams
-coffee
-cookies
-corn
-cupcakes
-crab
-curry
-cereal
-chimichanga
-eggs
-enchilada
-eggrolls
-English muffins
-edimame
-eel sushi
-fajita
-falafel
-fish 
-franks
-fondu
-French toast
-French dip
-ham
-halibut
-hamburger (and cheeseburgers and bacon cheeseburgers)
-honey
-huenos rancheros
-hash browns
-hot dogs
-haiku roll
-hummus
-ice cream
-Irish stew
-Indian food
-Italian bread
-jambalaya
-jelly / jam
-jerky
-jalapeño
-kale
-kabobs
-ketchup
-kiwi
-kidney beans
-kingfish
-lobster
-Lamb
-Linguine
-Lasagna
-Meatballs
-Moose
-Milk
-Milkshake
-Noodles
-Ostrich
-Pizza
-Pepperoni
-Porter
-Pancakes
+#format: Name, FoodDimensionKeywordM-FoodDimensionM;FoodDimensionKeywordM-FoodDimensionM;...
+#Nem nuong Hanoi, Nem nuong-Food category;Nuong-Cooking style;Hanoi-Location style
+#Pho bo Nam bo, Mien nam-Location style;Pho-Food category;Thit bo-Ingredient;Pho-Ingredient
+#Pho gia truyen Hanoi, Pho-Food category;Pho-Ingredient;Hanoi-Location style
+#Nem nuong Ninh hoa, Nem nuong-Food category;Nuong-Cooking style
+#Bun bo Hue, Bun-Food category;Bun-Ingredient;Hue-Location style;Thit bo-Ingredient
+#format: Name, FoodDimensionKeywordM;FoodDimensionKeywordM;...
+Nem nuong Hanoi, Nem nuong;Nuong;Hanoi
+Pho bo Nam bo, Mien nam;Pho;Thit bo
+Pho gia truyen Hanoi, Pho;Hanoi
+Nem nuong Ninh hoa, Nem nuong;Nuong
+Bun bo Hue, Bun;Hue;Thit bo
+
+DiscountM
+#format: Name, Discount
+Sommer, 0.15
+New open, 0.20
+
+UserM
+#format: Name, AccName, AccPwd
+tduccuong,tduccuong,tduccuong
+ryan,ryan,ryan
