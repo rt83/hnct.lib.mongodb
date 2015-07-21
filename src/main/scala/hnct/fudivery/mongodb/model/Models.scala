@@ -39,29 +39,61 @@ trait BaseM {
 
 case class Pair[T1, T2](_1: T1, _2: T2)
 
-abstract class AbstractM {
-  val modver: String = ModelBuilder.MODEL_VERSION
-  val _id: String =  new ObjectId().toString
-  val created: String = LocalDateTime.now.toString()
-}
-
 /* ------------------------------------- Food Dimension ------------------------------------- */
 
 case class FoodDimensionM (
+  _id: String,
+  modver: String,
+  created: String,
   name: String,
   desc: String,
   priority: Int,
   orderCount: Long,
   viewCount: Long
-) extends AbstractM with BaseM
+) extends BaseM
+
+object FoodDimensionM {
+  def apply(
+    name: String,
+    desc: String,
+    priority: Int,
+    orderCount: Long,
+    viewCount: Long
+  ) = new FoodDimensionM (
+ 		new ObjectId().toString,
+    ModelBuilder.MODEL_VERSION,
+    LocalDateTime.now.toString(),
+    name, desc, priority, orderCount, viewCount    
+  )
+}
+
+/* ------------------------------------- Food Dimension Keyword ------------------------------------- */
 
 case class FoodDimensionKeywordM (
+  _id: String,
+  modver: String,
+  created: String,
   name: String,
   foodDimId: String, // ID of the FoodDimension that this keyword belongs to
   orderCount: Long,
   viewCount: Long,
   msFunc: Seq[Pair[Double, Double]] // membership function of this keyword for future fuzzy search
-) extends AbstractM with BaseM
+) extends BaseM
+
+object FoodDimensionKeywordM {
+  def apply(
+    name: String,
+    foodDimId: String,
+    orderCount: Long,
+    viewCount: Long,
+    msFunc: Seq[Pair[Double, Double]]
+  ) = new FoodDimensionKeywordM(
+    new ObjectId().toString,
+    ModelBuilder.MODEL_VERSION,
+    LocalDateTime.now.toString(),
+    name, foodDimId, orderCount, viewCount, msFunc    
+  )
+}
 
 /* --------------------------------------- Item model --------------------------------------- */
 
@@ -80,6 +112,9 @@ case class RestaurantE (
 )
 
 case class FoodItemM (
+  _id: String,
+  modver: String,
+  created: String,
 	name: String, 
 	desc: String,
   photos: Seq[String],
@@ -87,11 +122,31 @@ case class FoodItemM (
   feedbacks: Seq[FeedbackE], // Seq{(feedbackId, userId, rankingScore)}
   restaurant: RestaurantE,
   disProgs: Seq[String] // list of discount programs
-) extends AbstractM with BaseM
+) extends BaseM
+
+object FoodItemM {
+  def apply(
+    name: String, 
+    desc: String,
+    photos: Seq[String],
+    keywords: Seq[String],
+    feedbacks: Seq[FeedbackE],
+    restaurant: RestaurantE,
+    disProgs: Seq[String]
+  ) = new FoodItemM(
+    new ObjectId().toString,
+    ModelBuilder.MODEL_VERSION,
+    LocalDateTime.now.toString(),
+    name, desc, photos, keywords, feedbacks,restaurant, disProgs
+  )
+}
 
 /* ----------------------------------- Restaurant model --------------------------------------- */
 
 case class RestaurantM(
+  _id: String,
+  modver: String,
+  created: String,
   name: String, 
   intro: String,
   photos: Seq[String],
@@ -100,7 +155,25 @@ case class RestaurantM(
   lon: Double,
   chefCook: String,
   feedbacks: Seq[FeedbackE]
-) extends AbstractM with BaseM
+) extends BaseM
+
+object RestaurantM {
+  def apply(
+    name: String, 
+    intro: String,
+    photos: Seq[String],
+    addr: String,
+    lat: Double,
+    lon: Double,
+    chefCook: String,
+    feedbacks: Seq[FeedbackE]
+  ) = new RestaurantM(
+    new ObjectId().toString,
+    ModelBuilder.MODEL_VERSION,
+    LocalDateTime.now.toString(),
+    name, intro, photos, addr, lat,lon, chefCook,feedbacks
+  )
+}
 
 /* ----------------------------------- Feedback model --------------------------------------- */
 
@@ -111,6 +184,9 @@ object RankDim extends Enumeration {
 }
 
 case class FeedbackM(
+  _id: String,
+  modver: String,
+  created: String,
   userId: String, 
   itemId: String,
   resId: String,
@@ -118,7 +194,24 @@ case class FeedbackM(
   comment: String,
   score: Double,
   rankDimId: RankDim.Value
-) extends AbstractM with BaseM
+) extends BaseM
+
+object FeedbackM {
+  def apply(
+    userId: String, 
+    itemId: String,
+    resId: String,
+    time: String,
+    comment: String,
+    score: Double,
+    rankDimId: RankDim.Value
+  ) = new FeedbackM(
+    new ObjectId().toString,
+    ModelBuilder.MODEL_VERSION,
+    LocalDateTime.now.toString(),
+    userId, itemId, resId, time, comment,score, rankDimId
+  )
+}
 
 /* ----------------------------------- User model --------------------------------------- */
 
@@ -129,19 +222,55 @@ object UserRole extends Enumeration {
 }
 
 case class UserM(
+  _id: String,
+  modver: String,
+  created: String,
   name: String,
   photos: Seq[String],
   addr: String,
   accName: String,
   accPwd: String,
   roles: Seq[UserRole.Value]
-) extends AbstractM with BaseM
+) extends BaseM
+
+object UserM {
+  def apply(
+    name: String,
+    photos: Seq[String],
+    addr: String,
+    accName: String,
+    accPwd: String,
+    roles: Seq[UserRole.Value]
+  ) = new UserM(
+    new ObjectId().toString,
+    ModelBuilder.MODEL_VERSION,
+    LocalDateTime.now.toString(),
+    name, photos, addr, accName, accPwd, roles
+  )
+}
 
 /* ----------------------------------- Discount model --------------------------------------- */
 
 case class DiscountM(
+  _id: String,
+  modver: String,
+  created: String,
   name: String, 
   desc: String,
   photos: Seq[String],
   discount: Double
-) extends AbstractM with BaseM
+) extends BaseM
+
+object DiscountM {
+  def apply(
+    name: String, 
+    desc: String,
+    photos: Seq[String],
+    discount: Double
+  ) = new DiscountM(
+    new ObjectId().toString,
+    ModelBuilder.MODEL_VERSION,
+    LocalDateTime.now.toString(),
+    name, desc, photos, discount
+  )
+}
