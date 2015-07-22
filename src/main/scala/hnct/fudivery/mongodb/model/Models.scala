@@ -67,7 +67,7 @@ object FoodDimensionM {
   )
 }
 
-/* ------------------------------------- Food Dimension Keyword ------------------------------------- */
+/* ------------------------------------- Food Keyword ------------------------------------- */
 
 case class FoodKeywordM (
   _id: String,
@@ -77,7 +77,7 @@ case class FoodKeywordM (
   foodDimId: String, // ID of the FoodDimension that this keyword belongs to
   orderCount: Long,
   viewCount: Long,
-  msFunc: Seq[Pair[Double, Double]] // membership function of this keyword for future fuzzy search
+  tokens: Seq[String] // tokens of this keywords
 ) extends BaseM
 
 object FoodKeywordM {
@@ -86,9 +86,32 @@ object FoodKeywordM {
     foodDimId: String, 
     orderCount: Long, 
     viewCount: Long, 
-    msFunc: Seq[Pair[Double, Double]]
+    tokens: Seq[String]
   ) = new FoodKeywordM(
-    new ObjectId().toString,    ModelBuilder.MODEL_VERSION,    LocalDateTime.now.toString(),    name, foodDimId, orderCount, viewCount, msFunc    
+    new ObjectId().toString, 
+    ModelBuilder.MODEL_VERSION,    
+    LocalDateTime.now.toString(),    
+    name, foodDimId, orderCount, viewCount, tokens    
+  )
+}
+
+/* ------------------------------------- Meaningful Keyword Token ------------------------------------- */
+
+case class MeaningfulTokenM (
+  _id: String,
+  modver: String,
+  created: String,
+  name: String
+) extends BaseM
+
+object MeaningfulTokenM {
+  def apply(
+    name: String
+  ) = new MeaningfulTokenM(
+    new ObjectId().toString,    
+    ModelBuilder.MODEL_VERSION,    
+    LocalDateTime.now.toString(),    
+    name    
   )
 }
 
