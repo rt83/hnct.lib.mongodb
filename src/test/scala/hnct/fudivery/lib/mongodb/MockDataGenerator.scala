@@ -31,7 +31,7 @@ object MockDataGenerator extends App with Logable {
   var discounts = Vector[DiscountM]()
   var foodItems = Vector[FoodItemM]()
   var foodDimensions = Vector[FoodDimensionM]()
-  var foodDimensionKeywords = Vector[FoodDimensionKeywordM]()
+  var foodDimensionKeywords = Vector[FoodKeywordM]()
   
   val cols = Set[String](
     "RestaurantM",
@@ -73,7 +73,7 @@ object MockDataGenerator extends App with Logable {
             
           case "FoodDimensionKeywordM" => 
             val fd = foodDimensions.filter(_.name == param(0))(0)
-            foodDimensionKeywords = foodDimensionKeywords :+ FoodDimensionKeywordM(param(1), fd._id, 0, 0, Seq())
+            foodDimensionKeywords = foodDimensionKeywords :+ FoodKeywordM(param(1), fd._id, 0, 0, Seq())
           
           case "DiscountM" => 
             discounts = discounts :+ DiscountM(param(0), "", imgArrayGen(2), param(1).toDouble)
@@ -116,7 +116,7 @@ object MockDataGenerator extends App with Logable {
   }
   
   foodDimensionKeywords foreach { obj => 
-    db.useCol[FoodDimensionKeywordM].insert(obj.toDbObject)
+    db.useCol[FoodKeywordM].insert(obj.toDbObject)
   }
   
   foodItems foreach { obj => 

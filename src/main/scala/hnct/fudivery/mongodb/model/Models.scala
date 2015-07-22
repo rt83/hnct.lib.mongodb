@@ -69,7 +69,7 @@ object FoodDimensionM {
 
 /* ------------------------------------- Food Dimension Keyword ------------------------------------- */
 
-case class FoodDimensionKeywordM (
+case class FoodKeywordM (
   _id: String,
   modver: String,
   created: String,
@@ -80,18 +80,15 @@ case class FoodDimensionKeywordM (
   msFunc: Seq[Pair[Double, Double]] // membership function of this keyword for future fuzzy search
 ) extends BaseM
 
-object FoodDimensionKeywordM {
+object FoodKeywordM {
   def apply(
-    name: String,
-    foodDimId: String,
-    orderCount: Long,
-    viewCount: Long,
+    name: String, 
+    foodDimId: String, 
+    orderCount: Long, 
+    viewCount: Long, 
     msFunc: Seq[Pair[Double, Double]]
-  ) = new FoodDimensionKeywordM(
-    new ObjectId().toString,
-    ModelBuilder.MODEL_VERSION,
-    LocalDateTime.now.toString(),
-    name, foodDimId, orderCount, viewCount, msFunc    
+  ) = new FoodKeywordM(
+    new ObjectId().toString,    ModelBuilder.MODEL_VERSION,    LocalDateTime.now.toString(),    name, foodDimId, orderCount, viewCount, msFunc    
   )
 }
 
