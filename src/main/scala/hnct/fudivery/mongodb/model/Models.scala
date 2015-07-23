@@ -74,41 +74,62 @@ case class FoodKeywordM (
   modver: String,
   created: String,
   name: String,
-  foodDimId: String, // ID of the FoodDimension that this keyword belongs to
+  fdId: String, // ID of the FoodDimension that this keyword belongs to
   orderCount: Long,
-  viewCount: Long,
-  tokens: Seq[String] // tokens of this keywords
+  viewCount: Long
 ) extends BaseM
 
 object FoodKeywordM {
   def apply(
     name: String, 
-    foodDimId: String, 
+    fdId: String, 
     orderCount: Long, 
-    viewCount: Long, 
-    tokens: Seq[String]
+    viewCount: Long
   ) = new FoodKeywordM(
     new ObjectId().toString, 
     ModelBuilder.MODEL_VERSION,    
     LocalDateTime.now.toString(),    
-    name, foodDimId, orderCount, viewCount, tokens    
+    name, fdId, orderCount, viewCount    
   )
 }
 
-/* ------------------------------------- Meaningful Keyword Token ------------------------------------- */
+/* ------------------------------------- Food Keyword Token ------------------------------------- */
 
-case class MeaningfulTokenM (
+case class KeywordTokenM (
+  _id: String,
+  modver: String,
+  created: String,
+  name: String,
+  fkId: String // ID of the FoodKeywordM that this token belongs to
+) extends BaseM
+
+object KeywordTokenM {
+  def apply(
+    name: String, 
+    fkId: String
+  ) = new KeywordTokenM(
+    new ObjectId().toString, 
+    ModelBuilder.MODEL_VERSION,    
+    LocalDateTime.now.toString(),    
+    name, fkId    
+  )
+}
+
+/* ------------------------------------- Mean Token ------------------------------------- */
+
+case class MeaninglessTokenM (
   _id: String,
   modver: String,
   created: String,
   name: String
 ) extends BaseM
 
-object MeaningfulTokenM {
+object MeaninglessTokenM {
   def apply(
-    name: String
-  ) = new MeaningfulTokenM(
-    new ObjectId().toString,    
+    name: String, 
+    fkId: String
+  ) = new MeaninglessTokenM(
+    new ObjectId().toString, 
     ModelBuilder.MODEL_VERSION,    
     LocalDateTime.now.toString(),    
     name    
@@ -120,6 +141,7 @@ object MeaningfulTokenM {
 case class FeedbackE (
   id: String,
   userId: String,
+  rankDim: RankDim.Value,
   rank: Double,
   comment: String
 )
@@ -201,6 +223,7 @@ object RankDim extends Enumeration {
   val SATISFACTION = Value("satisfaction")
   val TASTE = Value("taste")
   val HEALTHINESS = Value("healthiness")
+  val PRICE = Value("price")
 }
 
 case class FeedbackM(
@@ -213,7 +236,7 @@ case class FeedbackM(
   time: String,
   comment: String,
   score: Double,
-  rankDimId: RankDim.Value
+  rankDim: RankDim.Value
 ) extends BaseM
 
 object FeedbackM {
@@ -224,12 +247,12 @@ object FeedbackM {
     time: String,
     comment: String,
     score: Double,
-    rankDimId: RankDim.Value
+    rankDim: RankDim.Value
   ) = new FeedbackM(
     new ObjectId().toString,
     ModelBuilder.MODEL_VERSION,
     LocalDateTime.now.toString(),
-    userId, itemId, resId, time, comment,score, rankDimId
+    userId, itemId, resId, time, comment, score, rankDim
   )
 }
 

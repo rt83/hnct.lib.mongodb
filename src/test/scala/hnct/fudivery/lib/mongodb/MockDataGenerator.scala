@@ -73,7 +73,7 @@ object MockDataGenerator extends App with Logable {
             
           case "FoodDimensionKeywordM" => 
             val fd = foodDimensions.filter(_.name == param(0))(0)
-            foodDimensionKeywords = foodDimensionKeywords :+ FoodKeywordM(param(1), fd._id, 0, 0, Seq())
+            foodDimensionKeywords = foodDimensionKeywords :+ FoodKeywordM(param(1), fd._id, 0, 0)
           
           case "DiscountM" => 
             discounts = discounts :+ DiscountM(param(0), "", imgArrayGen(2), param(1).toDouble)
