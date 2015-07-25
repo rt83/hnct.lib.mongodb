@@ -81,7 +81,7 @@ case class FoodKeywordM (
 
 object FoodKeywordM {
   def apply(
-    name: String, 
+    name: String,
     fdId: String, 
     orderCount: Long, 
     viewCount: Long
@@ -100,18 +100,20 @@ case class KeywordTokenM (
   modver: String,
   created: String,
   name: String,
+  wordCount: Int, // number of single words of this keyword token, index on this field for quick search 
   fkId: String // ID of the FoodKeywordM that this token belongs to
 ) extends BaseM
 
 object KeywordTokenM {
   def apply(
     name: String, 
+    wordCount: Int,
     fkId: String
   ) = new KeywordTokenM(
     new ObjectId().toString, 
     ModelBuilder.MODEL_VERSION,    
     LocalDateTime.now.toString(),    
-    name, fkId    
+    name, wordCount, fkId    
   )
 }
 

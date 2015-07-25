@@ -14,7 +14,7 @@ Cooking style
 Meal type
 Ingredient
 
-FoodDimensionKeywordM
+FoodKeywordM
 #format: FoodDimensionM, Name 
 Location style, Hanoi
 Location style, Hue
@@ -45,13 +45,7 @@ Ingredient, Bun
 Ingredient, Pho
 
 FoodItemM
-#format: Name, FoodDimensionKeywordM-FoodDimensionM;FoodDimensionKeywordM-FoodDimensionM;...
-#Nem nuong Hanoi, Nem nuong-Food category;Nuong-Cooking style;Hanoi-Location style
-#Pho bo Nam bo, Mien nam-Location style;Pho-Food category;Thit bo-Ingredient;Pho-Ingredient
-#Pho gia truyen Hanoi, Pho-Food category;Pho-Ingredient;Hanoi-Location style
-#Nem nuong Ninh hoa, Nem nuong-Food category;Nuong-Cooking style
-#Bun bo Hue, Bun-Food category;Bun-Ingredient;Hue-Location style;Thit bo-Ingredient
-#format: Name, FoodDimensionKeywordM;FoodDimensionKeywordM;...
+#format: Name, FoodKeywordM;FoodKeywordM;...
 Nem nuong Hanoi, Nem nuong;Nuong;Hanoi
 Pho bo Nam bo, Mien nam;Pho;Thit bo
 Pho gia truyen Hanoi, Pho;Hanoi

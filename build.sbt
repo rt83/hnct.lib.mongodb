@@ -12,7 +12,5 @@ libraryDependencies ++= Seq(
 	"com.github.nscala-time" %% "nscala-time" % "2.0.0",
 	"org.mongodb" %% "casbah" % "2.8.1",
   "org.json4s" %% "json4s-jackson" % "3.2.11",
-  "com.typesafe.play" %% "play-json" % "2.3.4",
-  "com.owlike" % "genson-scala_2.11" % "1.3",
   "org.scalatest" %% "scalatest" % "2.2.4" % "test"
 )

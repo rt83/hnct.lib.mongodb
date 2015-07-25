@@ -8,6 +8,7 @@ import hnct.fudivery.mongodb.MongoDb
 import hnct.lib.config.Configuration
 import hnct.lib.config.ConfigurationFormat
 import java.io.File
+import hnct.lib.utility.StringUtil
 
 
 case class MockDataConfig(
@@ -31,7 +32,8 @@ object MockDataGenerator extends App with Logable {
   var discounts = Vector[DiscountM]()
   var foodItems = Vector[FoodItemM]()
   var foodDimensions = Vector[FoodDimensionM]()
-  var foodDimensionKeywords = Vector[FoodKeywordM]()
+  var foodKeywords = Vector[FoodKeywordM]()
+  var tokens = Vector[KeywordTokenM]()
   
   val cols = Set[String](
     "RestaurantM",
@@ -40,7 +42,7 @@ object MockDataGenerator extends App with Logable {
     "DiscountM",
     "FoodItemM",
     "FoodDimensionM",
-    "FoodDimensionKeywordM"
+    "FoodKeywordM"
   )
   
   val random = Random
@@ -71,9 +73,14 @@ object MockDataGenerator extends App with Logable {
           case "FoodDimensionM" => 
             foodDimensions = foodDimensions :+ FoodDimensionM(param(0), "", 0, 0, 0)
             
-          case "FoodDimensionKeywordM" => 
+          case "FoodKeywordM" => 
             val fd = foodDimensions.filter(_.name == param(0))(0)
-            foodDimensionKeywords = foodDimensionKeywords :+ FoodKeywordM(param(1), fd._id, 0, 0)
+            val fkw = FoodKeywordM(param(1), fd._id, 0, 0)
+            foodKeywords = foodKeywords :+ fkw
+            // create keyword tokens
+            StringUtil.wordCombiOf(param(1)) foreach { token =>
+            	tokens = tokens :+ KeywordTokenM(token, token.split(" ").size, fkw._id)
+            }
           
           case "DiscountM" => 
             discounts = discounts :+ DiscountM(param(0), "", imgArrayGen(2), param(1).toDouble)
@@ -89,7 +96,7 @@ object MockDataGenerator extends App with Logable {
             var kwIds = Vector[String]()
             for (keyword <- keywords) {
               println("Working with keyword "+keyword)
-              foodDimensionKeywords.filter(_.name == keyword).foreach { x => kwIds = kwIds :+ x._id }
+              foodKeywords.filter(_.name == keyword).foreach { fkw => kwIds = kwIds :+ fkw._id }
             }
             val resInd = random.nextInt(restaurants.size)
             foodItems = foodItems :+ FoodItemM(
@@ -115,8 +122,12 @@ object MockDataGenerator extends App with Logable {
     db.useCol[FoodDimensionM].insert(obj.toDbObject)
   }
   
-  foodDimensionKeywords foreach { obj => 
+  foodKeywords foreach { obj => 
     db.useCol[FoodKeywordM].insert(obj.toDbObject)
+  }
+  
+  tokens foreach { obj => 
+    db.useCol[KeywordTokenM].insert(obj.toDbObject)
   }
   
   foodItems foreach { obj => 
