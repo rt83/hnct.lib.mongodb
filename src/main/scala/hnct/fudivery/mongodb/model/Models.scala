@@ -67,25 +67,25 @@ object FoodDimensionM {
   )
 }
 
-/* ------------------------------------- Food Keyword ------------------------------------- */
+/* ------------------------------------- Food Group ------------------------------------- */
 
-case class FoodKeywordM (
+case class FoodGroupM (
   _id: String,
   modver: String,
   created: String,
   name: String,
-  fdId: String, // ID of the FoodDimension that this keyword belongs to
+  fdId: String, // ID of the FoodDimension that this FoodGroup belongs to
   orderCount: Long,
   viewCount: Long
 ) extends BaseM
 
-object FoodKeywordM {
+object FoodGroupM {
   def apply(
     name: String,
     fdId: String, 
     orderCount: Long, 
     viewCount: Long
-  ) = new FoodKeywordM(
+  ) = new FoodGroupM(
     new ObjectId().toString, 
     ModelBuilder.MODEL_VERSION,    
     LocalDateTime.now.toString(),    
@@ -93,47 +93,47 @@ object FoodKeywordM {
   )
 }
 
-/* ------------------------------------- Food Keyword Token ------------------------------------- */
+/* ------------------------------------- Food Keyword ------------------------------------- */
 
-case class KeywordTokenM (
+case class FoodKeywordM (
   _id: String,
   modver: String,
   created: String,
   name: String,
   wordCount: Int, // number of single words of this keyword token, index on this field for quick search 
-  fkId: String // ID of the FoodKeywordM that this token belongs to
+  fgId: String // ID of the FoodGroupM that this token belongs to
 ) extends BaseM
 
-object KeywordTokenM {
+object FoodKeywordM {
   def apply(
     name: String, 
-    wordCount: Int,
-    fkId: String
-  ) = new KeywordTokenM(
+    wordCount: Int, 
+    fgId: String
+  ) = new FoodKeywordM(
     new ObjectId().toString, 
-    ModelBuilder.MODEL_VERSION,    
-    LocalDateTime.now.toString(),    
-    name, wordCount, fkId    
+    ModelBuilder.MODEL_VERSION,
+    LocalDateTime.now.toString(),
+    name, wordCount, fgId    
   )
 }
 
 /* ------------------------------------- Mean Token ------------------------------------- */
 
-case class MeaninglessTokenM (
+case class MeaninglessKeywordM (
   _id: String,
   modver: String,
   created: String,
   name: String
 ) extends BaseM
 
-object MeaninglessTokenM {
+object MeaninglessKeywordM {
   def apply(
     name: String, 
     fkId: String
-  ) = new MeaninglessTokenM(
+  ) = new MeaninglessKeywordM(
     new ObjectId().toString, 
-    ModelBuilder.MODEL_VERSION,    
-    LocalDateTime.now.toString(),    
+    ModelBuilder.MODEL_VERSION,
+    LocalDateTime.now.toString(),
     name    
   )
 }
