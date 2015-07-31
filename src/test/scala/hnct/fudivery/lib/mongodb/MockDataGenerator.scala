@@ -79,7 +79,7 @@ object MockDataGenerator extends App with Logable {
             foodKeywords = foodKeywords :+ fkw
             // create keyword tokens
             StringUtil.wordCombiOf(param(1)) foreach { token =>
-            	tokens = tokens :+ FoodKeywordM(token, token.split(" ").size, fkw._id)
+            	tokens = tokens :+ FoodKeywordM(token, fkw._id, token.split(" ").size)
             }
           
           case "DiscountM" => 
@@ -105,7 +105,7 @@ object MockDataGenerator extends App with Logable {
                 imgArrayGen(6), 
                 kwIds,
                 Seq(), 
-                RestaurantE(restaurants(resInd)._id, restaurants(resInd).name, Pair(restaurants(resInd).lat, restaurants(resInd).lon), ""),
+                RestaurantE(restaurants(resInd)._id, restaurants(resInd).name, Pair(restaurants(resInd).lat, restaurants(resInd).lon), "", ""),
                 Seq()
             )
         }

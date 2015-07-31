@@ -11,13 +11,14 @@ import hnct.fudivery.mongodb.model._
  * @author tduccuong
  */
 object ConnectionTest extends App {
-//  val db = new MongoDb("localhost", 27017, "fudivery")
+  val db = new MongoDb("localhost", 27017, "fudivery")
 //  val items = db.query[FoodItemM].limit(1).map(ModelBuilder.fromDbObject[FoodItemM](_)).toIndexedSeq
 //  val fi = items(0)
 //  println(fi.toJson)
 //  db.getFile(fi._id+ModelBuilder.IMG_FILENAME_SEPERATOR+fi.photos(0)).get.writeTo("/Users/tduccuong/Temp/test.jpg")
   
   val fi = FoodDimensionM("noodle soup", "", 0, 0, 0)
+  db.useCol[FoodDimensionM].insert(fi.toDbObject)
   
   println(fi.toJson)
 }

@@ -7,6 +7,8 @@ import com.mongodb.DBObject
 import com.mongodb.casbah.commons.MongoDBObject
 import org.bson.types.ObjectId
 import com.github.nscala_time.time.Imports._
+import reflect.runtime.universe._
+import scala.reflect.ClassTag
 
 /**
  * @author tduccuong
@@ -20,11 +22,22 @@ object ModelBuilder {
   // this query will always prepended to any query in our system to ensure that only models of the current version will be loaded
   val MODEL_QUERY = MongoDBObject("modver" -> MODEL_VERSION)
   
-  implicit val formats = Serialization.formats(NoTypeHints)
+  private val formats = Serialization.formats(NoTypeHints)
   
-  def fromJson[T](json: String)(implicit m: Manifest[T]) = Serialization.read[T](json)
+  private def manifestOf[A:TypeTag] = {
+    val t = typeTag[A]
+    implicit val cl = ClassTag[A](t.mirror.runtimeClass(t.tpe))
+    manifest[A]
+  }
   
-  def fromDbObject[T](dbo: DBObject)(implicit m: Manifest[T]) = fromJson[T](dbo.toString())
+  def fromJson[A](json: String)(implicit t: TypeTag[A]) = {
+    val mf = manifestOf[A]
+    Serialization.read[A](json)(formats, mf)
+  }
+  
+  def fromDbObject[A](dbo: DBObject)(implicit t: TypeTag[A]) = {
+    fromJson[A](dbo.toString())
+  }
 }
 
 trait BaseM {
@@ -100,20 +113,20 @@ case class FoodKeywordM (
   modver: String,
   created: String,
   name: String,
-  wordCount: Int, // number of single words of this keyword token, index on this field for quick search 
-  fgId: String // ID of the FoodGroupM that this token belongs to
+  fgId: String, // ID of the FoodGroupM that this token belongs to
+  wordCount: Int // number of single words of this keyword token, index on this field for quick search 
 ) extends BaseM
 
 object FoodKeywordM {
   def apply(
     name: String, 
-    wordCount: Int, 
-    fgId: String
+    fgId: String,
+    wordCount: Int 
   ) = new FoodKeywordM(
     new ObjectId().toString, 
     ModelBuilder.MODEL_VERSION,
     LocalDateTime.now.toString(),
-    name, wordCount, fgId    
+    name, fgId, wordCount    
   )
 }
 
@@ -128,8 +141,7 @@ case class MeaninglessKeywordM (
 
 object MeaninglessKeywordM {
   def apply(
-    name: String, 
-    fkId: String
+    name: String
   ) = new MeaninglessKeywordM(
     new ObjectId().toString, 
     ModelBuilder.MODEL_VERSION,
@@ -152,7 +164,8 @@ case class RestaurantE (
   id: String,
   name: String,
   loc: Pair[Double, Double],
-  addr: String
+  addr: String,
+  cat: String // the food category provided by the restaurant that this food item belongs to
 )
 
 case class FoodItemM (
@@ -162,7 +175,7 @@ case class FoodItemM (
 	name: String, 
 	desc: String,
   photos: Seq[String],
-  keywords: Seq[String], // list of keyword IDs
+  foodGroups: Seq[String], // list of food groups' ID that this food item belongs to
   feedbacks: Seq[FeedbackE], // Seq{(feedbackId, userId, rankingScore)}
   restaurant: RestaurantE,
   disProgs: Seq[String] // list of discount programs
@@ -173,7 +186,7 @@ object FoodItemM {
     name: String, 
     desc: String,
     photos: Seq[String],
-    keywords: Seq[String],
+    foodGroups: Seq[String],
     feedbacks: Seq[FeedbackE],
     restaurant: RestaurantE,
     disProgs: Seq[String]
@@ -181,7 +194,7 @@ object FoodItemM {
     new ObjectId().toString,
     ModelBuilder.MODEL_VERSION,
     LocalDateTime.now.toString(),
-    name, desc, photos, keywords, feedbacks,restaurant, disProgs
+    name, desc, photos, foodGroups, feedbacks,restaurant, disProgs
   )
 }
 

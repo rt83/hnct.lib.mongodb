@@ -6,6 +6,8 @@ import com.mongodb.casbah.gridfs.GridFS
 import java.io.File
 import java.io.FileInputStream
 import com.mongodb.casbah.gridfs.GridFSDBFile
+import scala.reflect.runtime.universe._
+import scala.reflect.ClassTag
 
 class MongoDb(host: String, port: Int, dbName: String) {
   private val mongoClient = MongoClient(host, port)
@@ -29,7 +31,7 @@ class MongoDb(host: String, port: Int, dbName: String) {
   /**
    * Return a MongoDBCollection collection given its name
    */
-  def useCol(name: String) = {
+  def useCol(name: String): MongoCollection = {
     if (cols.contains(name)) cols(name)
     else {
       val col = db(name)
@@ -41,12 +43,13 @@ class MongoDb(host: String, port: Int, dbName: String) {
   /**
    * Return a MongoDBCollection given its Scala class name
    */
-  def useCol[T](implicit tag: reflect.ClassTag[T]): MongoCollection = useCol(tag.runtimeClass.getSimpleName)
+  def useCol[T](implicit tag: TypeTag[T]): MongoCollection = 
+    useCol(typeTag[T].mirror.runtimeClass(typeTag[T].tpe).getSimpleName)
   
   /**
    * Ensure that the will-be-loaded models's is always consistent with the current model version
    */
-  def query(colName: String)(q: DBObject) = {
+  def query(colName: String)(q: DBObject): MongoCursor = {
     val queryList = List(ModelBuilder.MODEL_QUERY, q)
     useCol(colName).find(MongoDBObject("$and" -> queryList))
   }
@@ -54,22 +57,22 @@ class MongoDb(host: String, port: Int, dbName: String) {
   /**
    * Ensure that the will-be-loaded models's is always consistent with the current model version
    */
-  def query[T](q: DBObject)(implicit tag: reflect.ClassTag[T]) = {
+  def query[T](q: DBObject)(implicit tag: TypeTag[T]): MongoCursor = {
     val queryList = List(ModelBuilder.MODEL_QUERY, q)
-    useCol(tag.runtimeClass.getSimpleName).find(MongoDBObject("$and" -> queryList)) 
+    useCol(typeTag[T].mirror.runtimeClass(typeTag[T].tpe).getSimpleName).find(MongoDBObject("$and" -> queryList)) 
   }
   
   /**
    * Query all documents in a collection
    */
-  def query[T](implicit tag: reflect.ClassTag[T]) = {
-    useCol(tag.runtimeClass.getSimpleName).find() 
+  def query[T](implicit tag: TypeTag[T]): MongoCursor = {
+    useCol(typeTag[T].mirror.runtimeClass(typeTag[T].tpe).getSimpleName).find() 
   }
   
   /**
    * Save binary file to db.
    */
-  def saveFile(fileName: String, fileNameInDb: String) = {
+  def saveFile(fileName: String, fileNameInDb: String): Unit = {
     val fileInputStream =new FileInputStream(new File(fileName))
     val gfsFile = gridFs.createFile(fileInputStream)
     gfsFile.filename = fileNameInDb
@@ -80,7 +83,7 @@ class MongoDb(host: String, port: Int, dbName: String) {
     gridFs.findOne(fileNameInDb)
   }
   
-  def deleteFile(fileNameInDb: String) = {
+  def deleteFile(fileNameInDb: String): Unit = {
     gridFs.remove(fileNameInDb)
   } 
   
