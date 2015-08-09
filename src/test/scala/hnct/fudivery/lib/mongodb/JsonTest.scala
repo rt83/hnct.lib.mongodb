@@ -17,8 +17,8 @@ object ConnectionTest extends App {
 //  println(fi.toJson)
 //  db.getFile(fi._id+ModelBuilder.IMG_FILENAME_SEPERATOR+fi.photos(0)).get.writeTo("/Users/tduccuong/Temp/test.jpg")
   
-  val fi = FoodDimensionM("noodle soup", "", 0, 0, 0)
-  db.useCol[FoodDimensionM].insert(fi.toDbObject)
+  val fi = DimensionM("noodle soup", "", 0, 0, 0)
+  db.useCol[DimensionM].insert(fi.toDbObject)
   
   println(fi.toJson)
 }

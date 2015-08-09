@@ -54,7 +54,7 @@ case class Pair[T1, T2](_1: T1, _2: T2)
 
 /* ------------------------------------- Food Dimension ------------------------------------- */
 
-case class FoodDimensionM (
+case class DimensionM (
   _id: String,
   modver: String,
   created: String,
@@ -65,84 +65,79 @@ case class FoodDimensionM (
   viewCount: Long
 ) extends BaseM
 
-object FoodDimensionM {
+object DimensionM {
   def apply(
-    name: String,
-    desc: String,
-    priority: Int,
-    orderCount: Long,
+    name: String, 
+    desc: String, 
+    priority: Int, 
+    orderCount: Long, 
     viewCount: Long
-  ) = new FoodDimensionM (
- 		new ObjectId().toString,
-    ModelBuilder.MODEL_VERSION,
-    LocalDateTime.now.toString(),
-    name, desc, priority, orderCount, viewCount    
+  ) = new DimensionM (
+ 		new ObjectId().toString, ModelBuilder.MODEL_VERSION, LocalDateTime.now.toString(), name, desc, priority, orderCount, viewCount    
   )
 }
 
-/* ------------------------------------- Food Group ------------------------------------- */
+/* ------------------------------------- Food Dimension Values ------------------------------------- */
 
-case class FoodGroupM (
+case class DimValM (
   _id: String,
   modver: String,
   created: String,
   name: String,
-  fdId: String, // ID of the FoodDimension that this FoodGroup belongs to
+  dims: Seq[String], // IDs of the dimensions that this dimval belongs to
   orderCount: Long,
   viewCount: Long
 ) extends BaseM
 
-object FoodGroupM {
+object DimValM {
   def apply(
-    name: String,
-    fdId: String, 
+    name: String, 
+    dims: Seq[String], 
     orderCount: Long, 
     viewCount: Long
-  ) = new FoodGroupM(
+  ) = new DimValM(
     new ObjectId().toString, 
-    ModelBuilder.MODEL_VERSION,    
-    LocalDateTime.now.toString(),    
-    name, fdId, orderCount, viewCount    
+    ModelBuilder.MODEL_VERSION,
+    LocalDateTime.now.toString(),
+    name, dims, orderCount, viewCount    
   )
 }
 
 /* ------------------------------------- Food Keyword ------------------------------------- */
 
-case class FoodKeywordM (
+case class KeywordM (
   _id: String,
   modver: String,
   created: String,
   name: String,
-  fgId: String, // ID of the FoodGroupM that this token belongs to
+  dimvals: String, // IDs of the dimvals that this keyword belongs to
   wordCount: Int // number of single words of this keyword token, index on this field for quick search 
 ) extends BaseM
 
-object FoodKeywordM {
+object KeywordM {
   def apply(
     name: String, 
-    fgId: String,
+    dimvals: String, 
     wordCount: Int 
-  ) = new FoodKeywordM(
-    new ObjectId().toString, 
-    ModelBuilder.MODEL_VERSION,
-    LocalDateTime.now.toString(),
-    name, fgId, wordCount    
+  ) = new KeywordM(
+    new ObjectId().toString,
+    ModelBuilder.MODEL_VERSION, LocalDateTime.now.toString(), name, dimvals, wordCount    
   )
 }
 
 /* ------------------------------------- Mean Token ------------------------------------- */
 
-case class MeaninglessKeywordM (
+case class NegativeWordM (
   _id: String,
   modver: String,
   created: String,
   name: String
 ) extends BaseM
 
-object MeaninglessKeywordM {
+object NegativeWordM {
   def apply(
     name: String
-  ) = new MeaninglessKeywordM(
+  ) = new NegativeWordM(
     new ObjectId().toString, 
     ModelBuilder.MODEL_VERSION,
     LocalDateTime.now.toString(),
@@ -175,7 +170,7 @@ case class FoodItemM (
 	name: String, 
 	desc: String,
   photos: Seq[String],
-  foodGroups: Seq[String], // list of food groups' ID that this food item belongs to
+  dimvals: Seq[String], // list of dimvals' ID that this food item is attached to
   feedbacks: Seq[FeedbackE], // Seq{(feedbackId, userId, rankingScore)}
   restaurant: RestaurantE,
   disProgs: Seq[String] // list of discount programs
@@ -186,7 +181,7 @@ object FoodItemM {
     name: String, 
     desc: String,
     photos: Seq[String],
-    foodGroups: Seq[String],
+    dimvals: Seq[String],
     feedbacks: Seq[FeedbackE],
     restaurant: RestaurantE,
     disProgs: Seq[String]
@@ -194,7 +189,7 @@ object FoodItemM {
     new ObjectId().toString,
     ModelBuilder.MODEL_VERSION,
     LocalDateTime.now.toString(),
-    name, desc, photos, foodGroups, feedbacks,restaurant, disProgs
+    name, desc, photos, dimvals, feedbacks,restaurant, disProgs
   )
 }
 
