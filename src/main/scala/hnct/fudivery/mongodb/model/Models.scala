@@ -110,14 +110,14 @@ case class KeywordM (
   modver: String,
   created: String,
   name: String,
-  dimvals: String, // IDs of the dimvals that this keyword belongs to
+  dimvals: Seq[String], // IDs of the dimvals that this keyword belongs to
   wordCount: Int // number of single words of this keyword token, index on this field for quick search 
 ) extends BaseM
 
 object KeywordM {
   def apply(
     name: String, 
-    dimvals: String, 
+    dimvals: Seq[String], 
     wordCount: Int 
   ) = new KeywordM(
     new ObjectId().toString,
