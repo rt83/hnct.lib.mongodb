@@ -78,7 +78,6 @@ object DimensionM {
 }
 
 /* ------------------------------------- Food Dimension Values ------------------------------------- */
-
 case class DimValM (
   _id: String,
   modver: String,
