@@ -1,7 +1,7 @@
 package hnct.fudivery.mongodb
 
 import com.mongodb.casbah.Imports._
-import hnct.fudivery.mongodb.model.ModelBuilder
+import hnct.fudivery.mongodb.ModelBuilder
 import com.mongodb.casbah.gridfs.GridFS
 import java.io.File
 import java.io.FileInputStream
