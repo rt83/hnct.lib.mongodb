@@ -10,5 +10,5 @@ import com.mongodb.casbah.commons.MongoDBObject
  * @author tduccuong
  */
 object ConnectionTest extends App {
-  val db = new MongoDb("localhost", 27017, "fudivery")
+  
 }

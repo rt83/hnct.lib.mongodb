@@ -1,7 +1,6 @@
 package hnct.fudivery.mongodb
 
 import com.mongodb.casbah.Imports._
-import hnct.fudivery.mongodb.ModelBuilder
 import com.mongodb.casbah.gridfs.GridFS
 import java.io.File
 import java.io.FileInputStream
@@ -16,7 +15,7 @@ class MongoDb(host: String, port: Int, dbName: String) {
   private var cols = Map[String, MongoCollection]()
   
   /* GridFS for storing binaries (including images) */
-  val gridFs = GridFS(db);
+  private val gridFs = GridFS(db);
   
   /**
    * Close the current connection
@@ -47,26 +46,37 @@ class MongoDb(host: String, port: Int, dbName: String) {
     useCol(typeTag[T].mirror.runtimeClass(typeTag[T].tpe).getSimpleName)
   
   /**
+   * Query documents that match q.
    * Ensure that the will-be-loaded models's is always consistent with the current model version
    */
   def query(colName: String)(q: DBObject): MongoCursor = {
-    val queryList = List(ModelBuilder.MODEL_QUERY, q)
+    val queryList = List(DbModelBuilder.MODEL_QUERY, q)
     useCol(colName).find(MongoDBObject("$and" -> queryList))
   }
   
   /**
+   * Query documents that match q.
    * Ensure that the will-be-loaded models's is always consistent with the current model version
    */
   def query[T](q: DBObject)(implicit tag: TypeTag[T]): MongoCursor = {
-    val queryList = List(ModelBuilder.MODEL_QUERY, q)
+    val queryList = List(DbModelBuilder.MODEL_QUERY, q)
     useCol(typeTag[T].mirror.runtimeClass(typeTag[T].tpe).getSimpleName).find(MongoDBObject("$and" -> queryList)) 
   }
   
   /**
-   * Query all documents in a collection
+   * Query all documents in a collection.
+   * Ensure that the will-be-loaded models's is always consistent with the current model version
    */
   def query[T](implicit tag: TypeTag[T]): MongoCursor = {
-    useCol(typeTag[T].mirror.runtimeClass(typeTag[T].tpe).getSimpleName).find() 
+    useCol(typeTag[T].mirror.runtimeClass(typeTag[T].tpe).getSimpleName).find(DbModelBuilder.MODEL_QUERY) 
+  }
+  
+  /**
+   * Query all documents in a collection.
+   * Ensure that the will-be-loaded models's is always consistent with the current model version.
+   */
+  def query[T](colName: String): MongoCursor = {
+    useCol(colName).find(DbModelBuilder.MODEL_QUERY) 
   }
   
   /**

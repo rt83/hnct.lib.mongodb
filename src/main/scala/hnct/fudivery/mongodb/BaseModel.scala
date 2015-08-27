@@ -7,14 +7,14 @@ import com.mongodb.DBObject
 import com.mongodb.casbah.commons.MongoDBObject
 import org.bson.types.ObjectId
 import com.github.nscala_time.time.Imports._
-import reflect.runtime.universe._
+import scala.reflect.runtime.universe._
 import scala.reflect.ClassTag
 
 /**
  * @author tduccuong
  */
 
-object ModelBuilder {
+object DbModelBuilder {
   // every model must be bound with a version to prevent inconsistency when loading data from db
   val MODEL_VERSION = "0.0.1"
   val IMG_FILENAME_SEPERATOR = "___"
