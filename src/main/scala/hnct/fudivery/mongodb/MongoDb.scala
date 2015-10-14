@@ -50,7 +50,7 @@ class MongoDb(host: String, port: Int, dbName: String) {
    * Ensure that the will-be-loaded models's is always consistent with the current model version
    */
   def query(colName: String)(q: DBObject): MongoCursor = {
-    val queryList = List(DbModelBuilder.MODEL_QUERY, q)
+    val queryList = List(ModelBuilder.MODEL_QUERY, q)
     useCol(colName).find(MongoDBObject("$and" -> queryList))
   }
   
@@ -59,7 +59,7 @@ class MongoDb(host: String, port: Int, dbName: String) {
    * Ensure that the will-be-loaded models's is always consistent with the current model version
    */
   def query[T](q: DBObject)(implicit tag: TypeTag[T]): MongoCursor = {
-    val queryList = List(DbModelBuilder.MODEL_QUERY, q)
+    val queryList = List(ModelBuilder.MODEL_QUERY, q)
     useCol(typeTag[T].mirror.runtimeClass(typeTag[T].tpe).getSimpleName).find(MongoDBObject("$and" -> queryList)) 
   }
   
@@ -68,7 +68,7 @@ class MongoDb(host: String, port: Int, dbName: String) {
    * Ensure that the will-be-loaded models's is always consistent with the current model version
    */
   def query[T](implicit tag: TypeTag[T]): MongoCursor = {
-    useCol(typeTag[T].mirror.runtimeClass(typeTag[T].tpe).getSimpleName).find(DbModelBuilder.MODEL_QUERY) 
+    useCol(typeTag[T].mirror.runtimeClass(typeTag[T].tpe).getSimpleName).find(ModelBuilder.MODEL_QUERY) 
   }
   
   /**
@@ -76,7 +76,7 @@ class MongoDb(host: String, port: Int, dbName: String) {
    * Ensure that the will-be-loaded models's is always consistent with the current model version.
    */
   def query[T](colName: String): MongoCursor = {
-    useCol(colName).find(DbModelBuilder.MODEL_QUERY) 
+    useCol(colName).find(ModelBuilder.MODEL_QUERY) 
   }
   
   /**
