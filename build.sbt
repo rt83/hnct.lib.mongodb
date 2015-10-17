@@ -1,4 +1,4 @@
-name := """fudivery.lib.mongodb"""
+name := """hnct.lib.mongodb"""
 
 version := "1.0"
 

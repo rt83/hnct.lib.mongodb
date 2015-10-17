@@ -1,4 +1,4 @@
-package hnct.fudivery.mongodb
+package hnct.lib.mongodb
 
 import org.json4s.jackson.Serialization
 import org.json4s.NoTypeHints

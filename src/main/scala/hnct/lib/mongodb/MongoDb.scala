@@ -1,4 +1,4 @@
-package hnct.fudivery.mongodb
+package hnct.lib.mongodb
 
 import com.mongodb.casbah.Imports._
 import com.mongodb.casbah.gridfs.GridFS
