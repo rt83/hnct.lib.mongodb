@@ -1,7 +1,6 @@
-package hnct.lib.mongodb
+package hnct.lib.mongodb.core
 
 import org.json4s.jackson.Serialization
-import org.json4s.NoTypeHints
 import com.mongodb.util.JSON
 import com.mongodb.DBObject
 import com.mongodb.casbah.commons.MongoDBObject
@@ -12,7 +11,6 @@ import scala.reflect.ClassTag
 import org.json4s.FieldSerializer
 import org.json4s.FieldSerializer.ignore
 import org.json4s.DefaultFormats
-import org.json4s.Formats
 
 /**
  * @author tduccuong

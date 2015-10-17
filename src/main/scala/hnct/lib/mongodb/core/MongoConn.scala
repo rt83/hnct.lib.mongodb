@@ -1,4 +1,4 @@
-package hnct.lib.mongodb
+package hnct.lib.mongodb.core
 
 import com.mongodb.casbah.Imports._
 import com.mongodb.casbah.gridfs.GridFS
@@ -6,9 +6,8 @@ import java.io.File
 import java.io.FileInputStream
 import com.mongodb.casbah.gridfs.GridFSDBFile
 import scala.reflect.runtime.universe._
-import scala.reflect.ClassTag
 
-class MongoDb(host: String, port: Int, dbName: String) {
+class MongoConn(host: String, port: Int, dbName: String) {
   private val mongoClient = MongoClient(host, port)
   
   private val db = mongoClient(dbName)
