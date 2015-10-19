@@ -6,8 +6,6 @@ import com.mongodb.DBObject
 import com.mongodb.casbah.commons.MongoDBObject
 import org.bson.types.ObjectId
 import com.github.nscala_time.time.Imports._
-import scala.reflect.runtime.universe._
-import scala.reflect.ClassTag
 import org.json4s.FieldSerializer
 import org.json4s.FieldSerializer.ignore
 import org.json4s.DefaultFormats
@@ -26,18 +24,11 @@ object ModelBuilder {
   
   val formats = DefaultFormats + FieldSerializer[BaseM](ignore("id"))
   
-  private def manifestOf[A:TypeTag] = {
-    val t = typeTag[A]
-    implicit val cl = ClassTag[A](t.mirror.runtimeClass(t.tpe))
-    manifest[A]
-  }
-  
-  def fromJson[A <: BaseM](json: String)(implicit t: TypeTag[A]) = {
-    val mf = manifestOf[A]
+  def fromJson[A <: BaseM](json: String)(implicit mf: Manifest[A]) = {
     Serialization.read[A](json)(formats, mf)
   }
   
-  def fromDbObject[A <: BaseM](dbo: DBObject)(implicit t: TypeTag[A]) = {
+  def fromDbObject[A <: BaseM](dbo: DBObject)(implicit mf: Manifest[A]) = {
     fromJson[A](dbo.toString())
   }
 }

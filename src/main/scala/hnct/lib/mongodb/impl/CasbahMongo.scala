@@ -17,19 +17,19 @@ class CasbahMongo(host: String, port: Int, dbName: String) extends MongoDb {
   
   /* --------------------------- Fetch methods ----------------------------- */
   
-  def fetch[A <: BaseM](nReturn: Int = 0)(implicit t: TypeTag[A]): Seq[A] = {
+  def fetch[A <: BaseM](nReturn: Int = 0)(implicit t: Manifest[A]): Seq[A] = {
     var cursor = conn.query[A]
     if (nReturn > 0) cursor = cursor.limit(nReturn)
     cursor.map(ModelBuilder.fromDbObject[A](_)).toIndexedSeq
   }
-
-  def fetchBySingleValue[A <: BaseM](fieldName: String, fieldVal: String, nReturn: Int = 0)(implicit t: TypeTag[A]): Seq[A] = {
+  
+  def fetchBySingleValue[A <: BaseM](fieldName: String, fieldVal: String, nReturn: Int = 0)(implicit t: Manifest[A]): Seq[A] = {
     var cursor = conn.useCol[A].find(MongoDBObject(fieldName -> fieldVal))
     if (nReturn > 0) cursor = cursor.limit(nReturn)
     cursor.map(ModelBuilder.fromDbObject[A](_)).toIndexedSeq
   }
   
-  def fetchByMultipleValues[A <: BaseM](fieldName: String, fieldVals: Seq[String], nReturn: Int = 0)(implicit t: TypeTag[A]): Seq[A] = {
+  def fetchByMultipleValues[A <: BaseM](fieldName: String, fieldVals: Seq[String], nReturn: Int = 0)(implicit t: Manifest[A]): Seq[A] = {
     var cursor = conn.query[A](fieldName $in fieldVals)
     if (nReturn > 0) cursor = cursor.limit(nReturn)
     cursor.map(ModelBuilder.fromDbObject[A](_)).toIndexedSeq
@@ -37,7 +37,7 @@ class CasbahMongo(host: String, port: Int, dbName: String) extends MongoDb {
   
   /* --------------------------- Persist methods ----------------------------- */
   
-  def persist[A <: BaseM](models: Seq[A])(implicit t: TypeTag[A]): Unit = {
+  def persist[A <: BaseM](models: Seq[A])(implicit t: Manifest[A]): Unit = {
     val col = conn.useCol[A]
     models foreach {model => col.save(model.toDbObject) }
   }
@@ -45,17 +45,17 @@ class CasbahMongo(host: String, port: Int, dbName: String) extends MongoDb {
   
   /* --------------------------- Delete methods ----------------------------- */
   
-  def delete[A <: BaseM](models: Seq[A])(implicit t: TypeTag[A]): Unit = {
+  def delete[A <: BaseM](models: Seq[A])(implicit t: Manifest[A]): Unit = {
     val col = conn.useCol[A]
     models foreach {model => col.remove(model.toDbObject) }
   }
   
-  def delete[A <: BaseM](fieldName: String, fieldVals: Seq[String])(implicit t: TypeTag[A]): Unit = {
+  def delete[A <: BaseM](fieldName: String, fieldVals: Seq[String])(implicit t: Manifest[A]): Unit = {
     val col = conn.useCol[A]
     col.remove(fieldName $in fieldVals)
   }
   
-  def deleteValuesInArrayField[A <: BaseM](arrayFieldName: String, arrayFieldVals: Seq[String])(implicit t: TypeTag[A]): Unit = {
+  def deleteValuesInArrayField[A <: BaseM](arrayFieldName: String, arrayFieldVals: Seq[String])(implicit t: Manifest[A]): Unit = {
     conn.useCol[A].update(
       MongoDBObject(), 
       $pull (arrayFieldName $in arrayFieldVals), 

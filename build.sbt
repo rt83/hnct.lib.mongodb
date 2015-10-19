@@ -11,6 +11,6 @@ libraryDependencies ++= Seq(
 	"hnct" % "hnct.lib.config" % "1.0.0-SNAPSHOT",
 	"com.github.nscala-time" %% "nscala-time" % "2.0.0",
 	"org.mongodb" %% "casbah" % "2.8.1",
-  "org.json4s" %% "json4s-jackson" % "3.2.11",
+  "org.json4s" %% "json4s-jackson" % "3.3.0",
   "org.scalatest" %% "scalatest" % "2.2.4" % "test"
 )
