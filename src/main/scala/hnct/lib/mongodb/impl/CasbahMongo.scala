@@ -7,6 +7,7 @@ import hnct.lib.mongodb.core.MongoDb
 import hnct.lib.mongodb.core.MongoConn
 import hnct.lib.mongodb.core.ModelBuilder
 import hnct.lib.mongodb.core.BaseM
+import com.mongodb.casbah.gridfs.GridFSDBFile
 
 class CasbahMongo(host: String, port: Int, dbName: String) extends MongoDb {
   private val conn = new MongoConn(host, port, dbName)
@@ -16,6 +17,8 @@ class CasbahMongo(host: String, port: Int, dbName: String) extends MongoDb {
   def closeDb = conn.closeDb
   
   /* --------------------------- Fetch methods ----------------------------- */
+  
+  def fetchFile(fileName: String): Option[GridFSDBFile] = conn.getFile(fileName)
   
   def fetch[A <: BaseM](nReturn: Int = 0)(implicit t: Manifest[A]): Seq[A] = {
     var cursor = conn.query[A]
@@ -35,6 +38,12 @@ class CasbahMongo(host: String, port: Int, dbName: String) extends MongoDb {
     cursor.map(ModelBuilder.fromDbObject[A](_)).toIndexedSeq
   }
   
+  def fetchByQuery[A <: BaseM](query: DBObject, nReturn: Int = 0)(implicit t: Manifest[A]): Seq[A] = {
+    var cursor = conn.query[A](query)
+    if (nReturn > 0) cursor = cursor.limit(nReturn)
+    cursor.map(ModelBuilder.fromDbObject[A](_)).toIndexedSeq
+  }
+  
   /* --------------------------- Persist methods ----------------------------- */
   
   def persist[A <: BaseM](models: Seq[A])(implicit t: Manifest[A]): Unit = {
@@ -42,6 +51,7 @@ class CasbahMongo(host: String, port: Int, dbName: String) extends MongoDb {
     models foreach {model => col.save(model.toDbObject) }
   }
   
+  def persistFile(fileName: String, fileNameInDb: String): Unit = conn.saveFile(fileName, fileNameInDb)
   
   /* --------------------------- Delete methods ----------------------------- */
   

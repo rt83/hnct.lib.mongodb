@@ -22,7 +22,7 @@ object ModelBuilder {
   // this query will always prepended to any query in our system to ensure that only models of the current version will be loaded
   val MODEL_QUERY = MongoDBObject("ver" -> MODEL_VERSION)
   
-  val formats = DefaultFormats + FieldSerializer[BaseM](ignore("id"))
+  val formats = DefaultFormats + FieldSerializer[BaseM](ignore("id")) + FieldSerializer[BaseM](ignore("creTime"))
   
   def fromJson[A <: BaseM](json: String)(implicit mf: Manifest[A]) = {
     Serialization.read[A](json)(formats, mf)
@@ -45,7 +45,7 @@ trait Serializable {
   def toDbObject = JSON.parse(toJson).asInstanceOf[DBObject]
 }
 
-abstract class BaseM(id: Option[String]) extends Serializable {
+abstract class BaseM(id: Option[String], creTime: Option[String] = None) extends Serializable {
   /**
    * Version of this model
    */
@@ -54,7 +54,10 @@ abstract class BaseM(id: Option[String]) extends Serializable {
   /**
    * The creation time of this object
    */
-  val cre = LocalDateTime.now.toString()
+  val cre: String = creTime match {
+    case None => LocalDateTime.now.toString()
+    case Some(time) => time
+  }
   
   /**
    * The ID of this object. This ID should be unique world-wide

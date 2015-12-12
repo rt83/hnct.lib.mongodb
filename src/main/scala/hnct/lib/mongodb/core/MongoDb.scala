@@ -1,6 +1,7 @@
 package hnct.lib.mongodb.core
 
 import com.mongodb.casbah.Imports._
+import com.mongodb.casbah.gridfs.GridFSDBFile
 
 /**
  * This trait defines possible access operations to a MongoDB database.
@@ -17,6 +18,11 @@ trait MongoDb {
    */
   def closeDb: Unit
 
+  /**
+   * Get file from GridFS
+   */
+  def fetchFile(fileName: String): Option[GridFSDBFile]
+  
   
 	/**
 	 * Fetch all models of type A from db, quantity limited by nReturn
@@ -33,6 +39,10 @@ trait MongoDb {
    */
   def fetchByMultipleValues[A <: BaseM](fieldName: String, fieldVals: Seq[String], nReturn: Int = 0)(implicit t: Manifest[A]): Seq[A]
   
+  /**
+   * given a MongoDB query, find models that match.
+   */
+  def fetchByQuery[A <: BaseM](query: DBObject, nReturn: Int = 0)(implicit t: Manifest[A]): Seq[A]
   
   
   /**
@@ -40,7 +50,10 @@ trait MongoDb {
    */
   def persist[A <: BaseM](models: Seq[A])(implicit t: Manifest[A]): Unit
   
-  
+  /**
+   * persist file to GridFS
+   */
+  def persistFile(fileName: String, fileNameInDb: String): Unit 
   
   def delete[A <: BaseM](models: Seq[A])(implicit t: Manifest[A]): Unit
   
