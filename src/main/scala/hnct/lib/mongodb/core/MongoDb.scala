@@ -23,6 +23,10 @@ trait MongoDb {
    */
   def fetchFile(fileName: String): Option[GridFSDBFile]
   
+  /**
+   * Make a mongodb $and query given a map 
+   */
+  def makeQuery[B <: Any](map: Map[String, B]): DBObject
   
 	/**
 	 * Fetch all models of type A from db, quantity limited by nReturn

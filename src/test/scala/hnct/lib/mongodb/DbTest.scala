@@ -25,6 +25,8 @@ object DbTest extends App {
 //    )
 //  )
   
-  val cats = db.fetch[CategoryM]()
-  println(Serialization.writePretty(cats)(ModelBuilder.formats))
+//  val cats = db.fetch[CategoryM]()
+//  println(Serialization.writePretty(cats)(ModelBuilder.formats))
+  
+  println(db.makeQuery(Map("a" -> true)))
 }

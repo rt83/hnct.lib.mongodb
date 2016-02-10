@@ -16,6 +16,12 @@ class CasbahMongo(host: String, port: Int, dbName: String) extends MongoDb {
   
   def closeDb = conn.closeDb
   
+  def makeQuery[B <: Any](map: Map[String, B]): DBObject = {
+    val builder = MongoDBObject.newBuilder
+    map.foreach(builder += _)
+    builder.result
+  }
+  
   /* --------------------------- Fetch methods ----------------------------- */
   
   def fetchFile(fileName: String): Option[GridFSDBFile] = conn.getFile(fileName)
