@@ -16,30 +16,12 @@ class CasbahMongo(host: String, port: Int, dbName: String) extends MongoDb {
   
   def closeDb = conn.closeDb
   
-  def makeQuery[B <: Any](map: Map[String, B]): DBObject = {
-    val builder = MongoDBObject.newBuilder
-    map.foreach(builder += _)
-    builder.result
-  }
-  
   /* --------------------------- Fetch methods ----------------------------- */
   
   def fetchFile(fileName: String): Option[GridFSDBFile] = conn.getFile(fileName)
   
   def fetch[A <: BaseM](nReturn: Int = 0)(implicit t: Manifest[A]): Seq[A] = {
     var cursor = conn.query[A]
-    if (nReturn > 0) cursor = cursor.limit(nReturn)
-    cursor.map(ModelBuilder.fromDbObject[A](_)).toIndexedSeq
-  }
-  
-  def fetchBySingleValue[A <: BaseM](fieldName: String, fieldVal: String, nReturn: Int = 0)(implicit t: Manifest[A]): Seq[A] = {
-    var cursor = conn.useCol[A].find(MongoDBObject(fieldName -> fieldVal))
-    if (nReturn > 0) cursor = cursor.limit(nReturn)
-    cursor.map(ModelBuilder.fromDbObject[A](_)).toIndexedSeq
-  }
-  
-  def fetchByMultipleValues[A <: BaseM](fieldName: String, fieldVals: Seq[String], nReturn: Int = 0)(implicit t: Manifest[A]): Seq[A] = {
-    var cursor = conn.query[A](fieldName $in fieldVals)
     if (nReturn > 0) cursor = cursor.limit(nReturn)
     cursor.map(ModelBuilder.fromDbObject[A](_)).toIndexedSeq
   }

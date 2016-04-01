@@ -23,25 +23,10 @@ trait MongoDb {
    */
   def fetchFile(fileName: String): Option[GridFSDBFile]
   
-  /**
-   * Make a mongodb $and query given a map 
-   */
-  def makeQuery[B <: Any](map: Map[String, B]): DBObject
-  
 	/**
 	 * Fetch all models of type A from db, quantity limited by nReturn
 	 */
 	def fetch[A <: BaseM](nReturn: Int = 0)(implicit t: Manifest[A]): Seq[A]
-  
-  /**
-   * Fetch models whose fieldName is fieldVal
-   */
-  def fetchBySingleValue[A <: BaseM](fieldName: String, fieldVal: String, nReturn: Int = 0)(implicit t: Manifest[A]): Seq[A]
-  
-  /**
-   * Given a set of string values, find models whose field contains at least one of the given values.
-   */
-  def fetchByMultipleValues[A <: BaseM](fieldName: String, fieldVals: Seq[String], nReturn: Int = 0)(implicit t: Manifest[A]): Seq[A]
   
   /**
    * given a MongoDB query, find models that match.
@@ -67,4 +52,5 @@ trait MongoDb {
    * Delete array field values in models that match one of the given arrayFieldVals
    */
   def deleteValuesInArrayField[A <: BaseM](arrayFieldName: String, arrayFieldVals: Seq[String])(implicit t: Manifest[A]): Unit
+  
 }

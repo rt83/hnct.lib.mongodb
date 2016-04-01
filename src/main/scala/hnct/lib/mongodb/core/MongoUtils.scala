@@ -1,0 +1,16 @@
+package hnct.lib.mongodb.core
+
+import com.mongodb.casbah.commons.MongoDBObject
+import com.mongodb.casbah.Imports._
+
+object MongoUtils {
+  implicit def makeQuery[B <: Any](criteria: Map[String, B]): DBObject = {
+    val builder = MongoDBObject.newBuilder
+    criteria.foreach(builder += _)
+    builder.result
+  }
+  
+  implicit def makeQuery[B <: Any](criteria: Tuple2[String, Seq[B]]): DBObject = {
+    criteria._1 $in criteria._2
+  }
+}
