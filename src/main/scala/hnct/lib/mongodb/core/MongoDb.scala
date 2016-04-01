@@ -40,6 +40,11 @@ trait MongoDb {
   def persist[A <: BaseM](models: Seq[A])(implicit t: Manifest[A]): Unit
   
   /**
+   * Insert/update a document of type A in db
+   */
+  def persist[A <: BaseM](model: A)(implicit t: Manifest[A]): Unit
+  
+  /**
    * persist file to GridFS
    */
   def persistFile(fileName: String, fileNameInDb: String): Unit 

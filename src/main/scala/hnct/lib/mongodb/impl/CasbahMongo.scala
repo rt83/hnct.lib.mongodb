@@ -39,6 +39,11 @@ class CasbahMongo(host: String, port: Int, dbName: String) extends MongoDb {
     models foreach {model => col.save(model.toDbObject) }
   }
   
+  def persist[A <: BaseM](model: A)(implicit t: Manifest[A]): Unit = {
+    val col = conn.useCol[A]
+    col.save(model.toDbObject)
+  }
+  
   def persistFile(fileName: String, fileNameInDb: String): Unit = conn.saveFile(fileName, fileNameInDb)
   
   /* --------------------------- Delete methods ----------------------------- */
