@@ -49,6 +49,8 @@ trait MongoDb {
    */
   def persistFile(fileName: String, fileNameInDb: String): Unit 
   
+  def emptyColl[A <: BaseM]()(implicit t: Manifest[A]): Unit
+  
   def delete[A <: BaseM](models: Seq[A])(implicit t: Manifest[A]): Unit
   
   def delete[A <: BaseM](fieldName: String, fieldVals: Seq[String])(implicit t: Manifest[A]): Unit

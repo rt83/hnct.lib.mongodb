@@ -48,6 +48,8 @@ class CasbahMongo(host: String, port: Int, dbName: String) extends MongoDb {
   
   /* --------------------------- Delete methods ----------------------------- */
   
+  def emptyColl[A <: BaseM]()(implicit t: Manifest[A]): Unit = conn.useCol[A].remove(MongoDBObject.empty)
+  
   def delete[A <: BaseM](models: Seq[A])(implicit t: Manifest[A]): Unit = {
     val col = conn.useCol[A]
     models foreach {model => col.remove(model.toDbObject) }
