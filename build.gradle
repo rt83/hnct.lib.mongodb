@@ -13,10 +13,8 @@ dependencies {
 
 	compile 'org.json4s:json4s-jackson_2.11:3.2.11'
 	
-	projDependency ':hnct.lib.utility'
-	prod 'hnct:hnct.lib.utility:1.0.0'
+	projDependency ':hnct.lib.utility', 'hnct:hnct.lib.utility:1.0.0-SNAPSHOT', true
 	
-	projDependency ':hnct.lib.config'
-	prod "hnct:hnct.lib.config:1.0.0"
+	projDependency ':hnct.lib.config', "hnct:hnct.lib.config:1.0.0-SNAPSHOT", true
 	
 }
