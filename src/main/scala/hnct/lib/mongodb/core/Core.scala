@@ -45,7 +45,7 @@ trait Serializable {
   def toDbObject = JSON.parse(toJson).asInstanceOf[DBObject]
 }
 
-abstract class BaseM(id: Option[String], creTime: Option[String] = None) extends Serializable {
+abstract class BaseM(creTime: Option[String] = None) extends Serializable {
   /**
    * Version of this model
    */
@@ -57,13 +57,5 @@ abstract class BaseM(id: Option[String], creTime: Option[String] = None) extends
   val cre: String = creTime match {
     case None => LocalDateTime.now.toString()
     case Some(time) => time
-  }
-  
-  /**
-   * The ID of this object. This ID should be unique world-wide
-   */
-  val _id: String = id match {
-    case None => new ObjectId().toString
-    case Some(value) => value 
   }
 }

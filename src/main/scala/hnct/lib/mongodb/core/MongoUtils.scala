@@ -17,4 +17,6 @@ object MongoUtils {
   implicit def makeSingleQuery[B <: Any](criteria: Tuple2[String, B]): DBObject = {
     MongoDBObject(criteria._1 -> criteria._2)
   }
+
+  def mongoId = new ObjectId().toString
 }
