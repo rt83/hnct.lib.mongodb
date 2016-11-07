@@ -1,13 +1,18 @@
 package hnct.lib.mongodb.api
 
 import org.bson.codecs.configuration.CodecRegistry
-import org.bson.conversions.Bson
 import org.mongodb.scala._
-import scala.reflect.runtime.universe._
+
+import scala.concurrent.Future
+import scala.reflect.ClassTag
 
 /**
-	* Created by Ryan on 11/6/2016.
-	*/
+  * Created by Ryan on 11/6/2016.
+  *
+  * MongoDb represent a utility class to query a mongo database. It assumes the application is using a set of models
+  * and the collection has name identical to that of the model class.
+  *
+  */
 trait MongoDb {
 	
 	val conn : MongoClient
@@ -19,10 +24,20 @@ trait MongoDb {
 	
 	val db : MongoDatabase
 	
-	def col[T](name : String) : MongoCollection[T]
+	def col[T](name : String)(implicit t : ClassTag[T]) : MongoCollection[T]
 	
-	def fetch[T](nReturn : Int = 0)(implicit t : TypeTag[T]) : Seq[T]
+	def fetch[T](nReturn : Int)(implicit t : ClassTag[T]) : Future[Seq[T]]
 	
-	def fetch[T](query: Bson, nReturn: Int = 0)(implicit t : TypeTag[T]) : Seq[T]
+	def fetch[T](query: Document, nReturn: Int)(implicit t : ClassTag[T]) : Future[Seq[T]]
+
+	/**
+	  * Insert/update a list of documents of type A in db
+	  */
+	def persist[T](models: Seq[T])(implicit t: ClassTag[T]): Future[Unit]
+
+	/**
+	  * Insert/update a document of type A in db
+	  */
+	def persist[T](model: T)(implicit t: ClassTag[T]): Future[Unit]
 	
 }

@@ -14,6 +14,8 @@ dependencies {
 	compile group: 'org.mongodb.scala', name: 'mongo-scala-driver_2.11', version: '1.2.0-beta1'
 
 	compile 'org.json4s:json4s-jackson_2.11:3.2.11'
+
+	macrosCompile "org.scala-lang:scala-compiler:$scalaVersion"
 	
 	projDependency ':hnct.lib.utility', 'hnct:hnct.lib.utility:1.0.0-SNAPSHOT', true
 	
