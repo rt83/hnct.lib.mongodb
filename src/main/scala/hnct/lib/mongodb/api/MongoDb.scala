@@ -26,9 +26,9 @@ trait MongoDb {
 	
 	def col[T](name : String)(implicit t : ClassTag[T]) : MongoCollection[T]
 	
-	def fetch[T](nReturn : Int)(implicit t : ClassTag[T]) : Future[Seq[T]]
+	def fetch[T](nReturn : Int = 0)(implicit t : ClassTag[T]) : Future[Seq[T]]
 	
-	def fetch[T](query: Document, nReturn: Int)(implicit t : ClassTag[T]) : Future[Seq[T]]
+	def query[T](query: Document, nReturn: Int = 0)(implicit t : ClassTag[T]) : Future[Seq[T]]
 
 	/**
 	  * Insert/update a list of documents of type A in db

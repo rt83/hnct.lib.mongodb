@@ -23,16 +23,14 @@ class MongoDbImpl(
 
 	private def colName[T](implicit t : ClassTag[T]) = t.runtimeClass.getSimpleName
 
-	override def fetch[T](nReturn: Int)(implicit t : ClassTag[T]): Future[Seq[T]] = {
-		
+	override def fetch[T](nReturn: Int = 0)(implicit t : ClassTag[T]): Future[Seq[T]] = {
 		val c = col[T](colName)
 		
 		if (nReturn == 0) c.find[T].toFuture()
 		else c.find[T].limit(nReturn).toFuture()
-
 	}
 	
-	override def fetch[T](query: Document, nReturn: Int)(implicit t : ClassTag[T]) : Future[Seq[T]] = {
+	override def query[T](query: Document, nReturn: Int = 0)(implicit t : ClassTag[T]) : Future[Seq[T]] = {
 		val c = col[T](colName)
 
 		if (nReturn == 0) c.find[T](query).toFuture()
