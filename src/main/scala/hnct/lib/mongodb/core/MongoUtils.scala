@@ -2,6 +2,7 @@ package hnct.lib.mongodb.core
 
 import com.mongodb.casbah.commons.MongoDBObject
 import com.mongodb.casbah.Imports._
+import org.bson.types.{ObjectId => scalaObjectId}
 
 object MongoUtils {
   implicit def makeAndQuery[B <: Any](criteria: Map[String, B]): DBObject = {
@@ -19,4 +20,6 @@ object MongoUtils {
   }
 
   def mongoId = new ObjectId().toString
+
+  def mongoIdObject = new scalaObjectId()
 }

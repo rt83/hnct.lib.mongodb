@@ -1,6 +1,6 @@
 package hnct.lib.mongodb.impl
 
-import scala.reflect.runtime.universe._
+//import scala.reflect.runtime.universe._
 import com.mongodb.casbah.commons.MongoDBObject
 import com.mongodb.casbah.Imports._
 import hnct.lib.mongodb.core.MongoDb
