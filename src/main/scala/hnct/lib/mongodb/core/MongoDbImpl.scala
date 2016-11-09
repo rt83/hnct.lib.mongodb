@@ -1,11 +1,12 @@
-package hnct.lib.mongodb.core_new
+package hnct.lib.mongodb.core
 
-import hnct.lib.mongodb.api.MongoDb
 import org.bson.codecs.configuration.CodecRegistry
-import org.mongodb.scala.{ Document, MongoClient, MongoCollection, MongoDatabase}
-import scala.concurrent.Future
+import org.mongodb.scala.{Document, MongoClient, MongoCollection, MongoDatabase}
+
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 import scala.reflect.ClassTag
+import hnct.lib.mongodb.api.MongoDb
 
 /**
 	* Created by Ryan on 11/6/2016.
@@ -14,7 +15,7 @@ class MongoDbImpl(
    host : String, port : Int,
    override val codecs: CodecRegistry,
    override val dbName: String
-) extends MongoDb {
+) extends hnct.lib.mongodb.api.MongoDb {
 	
 	override val conn: MongoClient = MongoClient(s"mongodb://$host:$port")
 	override val db : MongoDatabase = conn.getDatabase(dbName).withCodecRegistry(codecs)
