@@ -1,21 +1,22 @@
-package hnct.lib.mongodb.core
+package hnct.lib.mongodb.impl
 
+import hnct.lib.mongodb.api.MongoDb
 import org.bson.codecs.configuration.CodecRegistry
-import org.mongodb.scala.{Document, MongoClient, MongoCollection, MongoDatabase}
+import org.mongodb.scala.bson.conversions.Bson
+import org.mongodb.scala.{MongoClient, MongoCollection, MongoDatabase}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.reflect.ClassTag
-import hnct.lib.mongodb.api.MongoDb
 
 /**
 	* Created by Ryan on 11/6/2016.
 	*/
-class MongoDbImpl(
+class DefaultMongoDb(
    host : String, port : Int,
    override val codecs: CodecRegistry,
    override val dbName: String
-) extends hnct.lib.mongodb.api.MongoDb {
+) extends MongoDb {
 	
 	override val conn: MongoClient = MongoClient(s"mongodb://$host:$port")
 	override val db : MongoDatabase = conn.getDatabase(dbName).withCodecRegistry(codecs)
@@ -31,28 +32,31 @@ class MongoDbImpl(
 		else c.find[T].limit(nReturn).toFuture()
 	}
 	
-	override def query[T](query: Document, nReturn: Int = 0)(implicit t : ClassTag[T]) : Future[Seq[T]] = {
+	override def query[T](query: Bson, nReturn: Int = 0)(implicit t : ClassTag[T]) : Future[Seq[T]] = {
 		val c = col[T](colName)
 
 		if (nReturn == 0) c.find[T](query).toFuture()
 		else c.find[T](query).limit(nReturn).toFuture()
 	}
 
-	/**
-	  * Insert/update a list of documents of type A in db
-	  */
 	override def persist[T](models: Seq[T])(implicit t: ClassTag[T]): Future[Unit] = {
 		col[T](colName).insertMany(models).toFuture().map { _ =>
 			Unit	// if future completed, always return true
 		}
 	}
 
-	/**
-	  * Insert/update a document of type A in db
-	  */
 	override def persist[T](model: T)(implicit t: ClassTag[T]): Future[Unit] = {
 		col[T](colName).insertOne(model).toFuture().map { _ =>
 			Unit
 		}
+	}
+
+	override def delete[T](query: Bson)(implicit t : ClassTag[T]) : Future[Unit] =
+		col[T](colName).deleteMany(query).toFuture().map(_ => Unit)
+
+	override def closeDb: Future[Unit] = Future.successful(conn.close())
+
+	override def emptyDb: Future[Unit] = {
+		???
 	}
 }

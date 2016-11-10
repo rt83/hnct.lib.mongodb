@@ -2,6 +2,7 @@ package hnct.lib.mongodb.api
 
 import org.bson.codecs.configuration.CodecRegistry
 import org.mongodb.scala._
+import org.mongodb.scala.bson.conversions.Bson
 
 import scala.concurrent.Future
 import scala.reflect.ClassTag
@@ -23,21 +24,73 @@ trait MongoDb {
 	val dbName : String
 	
 	val db : MongoDatabase
-	
-	def col[T](name : String)(implicit t : ClassTag[T]) : MongoCollection[T]
-	
-	def fetch[T](nReturn : Int = 0)(implicit t : ClassTag[T]) : Future[Seq[T]]
-	
-	def query[T](query: Document, nReturn: Int = 0)(implicit t : ClassTag[T]) : Future[Seq[T]]
 
 	/**
-	  * Insert/update a list of documents of type A in db
-	  */
+		* Get collection by name from db. Supposed to be used by
+		* implementation class of this trait
+		* @param name
+		* @param t
+		* @tparam T
+		* @return
+		*/
+	protected def col[T](name : String)(implicit t : ClassTag[T]) : MongoCollection[T]
+
+	/**
+		* Fetch all models of type T in db limited to nReturn number of models.
+		* @param nReturn
+		* @param t
+		* @tparam T
+		* @return
+		*/
+	def fetch[T](nReturn : Int = 0)(implicit t : ClassTag[T]) : Future[Seq[T]]
+
+	/**
+		* Fetch models of type T from db given a query
+		* @param query
+		* @param nReturn
+		* @param t
+		* @tparam T
+		* @return
+		*/
+	def query[T](query: Bson, nReturn: Int = 0)(implicit t : ClassTag[T]) : Future[Seq[T]]
+
+	/**
+		* Bulk save/update a list of models in db
+		* @param models
+		* @param t
+		* @tparam T
+		* @return
+		*/
 	def persist[T](models: Seq[T])(implicit t: ClassTag[T]): Future[Unit]
 
 	/**
-	  * Insert/update a document of type A in db
-	  */
+		* Save/update a model in db.
+		* @param model
+		* @param t
+		* @tparam T
+		* @return
+		*/
 	def persist[T](model: T)(implicit t: ClassTag[T]): Future[Unit]
+
+	/**
+		* Delete models in db given criteria.
+		* @param conds
+		* @param t
+		* @tparam T
+		* @return
+		*/
+	def delete[T](conds: Bson)(implicit t: ClassTag[T]): Future[Unit]
+
+	/**
+		* Close the connection to the db
+		* @return
+		*/
+	def closeDb: Future[Unit]
+
+	/**
+		* Empty the database
+		* @return
+		*/
+	def emptyDb: Future[Unit]
 	
 }

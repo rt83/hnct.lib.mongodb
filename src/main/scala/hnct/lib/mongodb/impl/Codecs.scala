@@ -1,6 +1,5 @@
-package hnct.lib.mongodb.core
+package hnct.lib.mongodb.impl
 
-import com.mongodb.client.model.geojson.codecs.{MultiPointCodec, PointCodec}
 import org.bson.codecs._
 import org.bson.{BsonReader, BsonType, BsonWriter}
 
@@ -25,12 +24,17 @@ object Codecs {
 		
 		while (reader.readBsonType != BsonType.END_OF_DOCUMENT)
 			s += tCodec.decode(reader, ctx)
-		
+
 		reader.readEndArray()
 		s
 	}
+
+  def readSet[T](name: String, reader: BsonReader, ctx : DecoderContext)(implicit tCodec : Codec[T]) : Set[T] = {
+    reader.readName(name)
+    readSet[T](reader, ctx)
+  }
 	
-	def writeSet[T](writer : BsonWriter, s : Set[T], ctx : EncoderContext)(implicit tCodec : Codec[T]) = {
+	def writeSet[T](s : Set[T], writer : BsonWriter, ctx : EncoderContext)(implicit tCodec : Codec[T]): Unit = {
 		writer.writeStartArray()
 		s.foreach(t => {
 			tCodec.encode(writer, t, ctx)
@@ -38,9 +42,9 @@ object Codecs {
 		writer.writeEndArray()
 	}
 	
-	def writeSet[T](writer : BsonWriter, name : String, s : Set[T], ctx : EncoderContext)(implicit tCodec : Codec[T]) = {
+	def writeSet[T](name : String, s : Set[T], writer : BsonWriter, ctx : EncoderContext)(implicit tCodec : Codec[T]): Unit = {
 		writer.writeName(name)
-		writeSet(writer, s, ctx)
+		writeSet[T](s, writer, ctx)
 	}
 	
 }
