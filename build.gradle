@@ -7,6 +7,12 @@ group = 'hnct'
 
 ext.scalaVersion = '2.11.8'
 
+/* configuration to configure zinc compiler. To enable when sbt zinc is included in Gradle
+configurations {
+	scalaCompiler
+}
+*/
+
 dependencies {
 	
 	compile 'org.mongodb:casbah_2.11:2.8.1'
@@ -14,11 +20,44 @@ dependencies {
 	compile group: 'org.mongodb.scala', name: 'mongo-scala-driver_2.11', version: '1.2.0-beta1'
 
 	compile 'org.json4s:json4s-jackson_2.11:3.2.11'
+	
+	/* Dependency needed to configure plugin for the compiler that allow the use of scalameta for macro writing. Current disabled because
+	zinc compiler used by gradle is outdated (use scala 2.10.x while scalameta is only available in scala 2.11 onward.
+	zinc "com.typesafe.zinc:zinc:0.3.12"
+	scalaCompiler "org.scala-lang:scala-library:2.11.8"
+	scalaCompiler "org.scala-lang:scala-compiler:2.11.8"
+	scalaCompiler "org.scala-lang:scala-reflect:2.11.8"
+	scalaCompiler "org.scalameta:paradise_2.11.8:3.0.0-M5"
+	scalaCompiler "org.scalameta:scalameta_2.11:1.2.0"
 
-	compile "org.scala-lang:scala-compiler:$scalaVersion"
+	macrosCompile "org.scalameta:scalameta_2.11:1.2.0"
+	*/
 	
 	projDependency ':hnct.lib.utility', 'hnct:hnct.lib.utility:1.0.0-SNAPSHOT', true
 	
 	projDependency ':hnct.lib.config', "hnct:hnct.lib.config:1.0.0-SNAPSHOT", true
 	
 }
+
+/* Configure the plugin and scalaClasspath which is used by the compiler. Basically this code use the dependencies resolved by configuration
+scalaCompiler above and add it into the classpath of the scala zinc compiler. But currently it is useless because the zinc compiler is outdated.
+afterEvaluate { curProject ->
+	compileScala {
+
+		def paradiseAbsolute = ""
+
+		configurations.scalaCompiler.each { d ->
+			def name = d.getName()
+			if (name.contains("paradise")) paradiseAbsolute = d.getAbsolutePath()
+		}
+
+		scalaClasspath = configurations.scalaCompiler
+
+		scalaClasspath.each { println it }
+
+		//zincClasspath.each { println it }
+
+		scalaCompileOptions.setAdditionalParameters(["-Xplugin-require:macroparadise"])
+	}
+}
+*/
