@@ -54,6 +54,12 @@ class DefaultMongoDb(
 	override def delete[T](query: Bson)(implicit t : ClassTag[T]) : Future[Unit] =
 		col[T](colName).deleteMany(query).toFuture().map(_ => Unit)
 
+	override def clear[T](implicit t : ClassTag[T]) : Future[Unit] = {
+		col[T](colName).drop().toFuture().map { _ =>
+			db.createCollection(colName).toFuture().map { _ => Unit }
+		}
+	}
+
 	override def closeDb: Future[Unit] = Future.successful(conn.close())
 
 	override def emptyDb: Future[Unit] = {

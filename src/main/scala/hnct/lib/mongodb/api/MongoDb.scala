@@ -82,6 +82,14 @@ trait MongoDb {
 	def delete[T](conds: Bson)(implicit t: ClassTag[T]): Future[Unit]
 
 	/**
+		* Clear the collection of type T
+		* @param t
+		* @tparam T
+		* @return
+		*/
+	def clear[T](implicit t : ClassTag[T]) : Future[Unit]
+
+	/**
 		* Close the connection to the db
 		* @return
 		*/
