@@ -96,28 +96,26 @@ object Codecs {
 
   //========================================================================================
   // General read/write of Option[T]
-  //
-  // (Currently, I have to use Array to get around Bson API crap
-  // Please improve it whenever possible)
   //========================================================================================
 
   def writeOption[T](name: String, value: Option[T], writer: BsonWriter, encoderContext: EncoderContext)(implicit tCodec : Codec[T]): Unit = {
-    writer.writeName(name)
-    writer.writeStartArray()
-    if (!value.isDefined) writer.writeNull()
-    else tCodec.encode(writer, value.get, encoderContext)
-    writer.writeEndArray()
+    if (!value.isDefined)
+      writer.writeBoolean(name+"Op", false)
+    else {
+      writer.writeBoolean(name+"Op", true)
+      writer.writeName(name)
+      tCodec.encode(writer, value.get, encoderContext)
+    }
   }
 
   def readOption[T](name: String, reader: BsonReader, decoderContext: DecoderContext)(implicit tCodec : Codec[T]): Option[T] = {
-    reader.readName(name);
-    reader.readStartArray()
-    val value = reader.readBsonType() match {
-      case BsonType.NULL => { reader.readNull(); None}
-      case _ => Some(tCodec.decode(reader, decoderContext))
+    reader.readBoolean(name+"Op") match {
+      case false => None
+      case _ => {
+        reader.readName(name);
+        Some(tCodec.decode(reader, decoderContext))
+      }
     }
-    reader.readEndArray()
-    value
   }
 
   //========================================================================================
