@@ -98,23 +98,27 @@ object Codecs {
   // General read/write of Option[T]
   //========================================================================================
 
-  def writeOption[T](name: String, value: Option[T], writer: BsonWriter, encoderContext: EncoderContext)(implicit tCodec : Codec[T]): Unit = {
-    if (!value.isDefined)
-      writer.writeBoolean(name+"Op", false)
-    else {
-      writer.writeBoolean(name+"Op", true)
+  def writeOption[T]
+    (name: String, value: Option[T], writer: BsonWriter, encoderContext: EncoderContext)
+    (implicit tCodec : Codec[T]): Unit =
+  {
+    if (value.isDefined) {
       writer.writeName(name)
       tCodec.encode(writer, value.get, encoderContext)
     }
   }
 
-  def readOption[T](name: String, reader: BsonReader, decoderContext: DecoderContext)(implicit tCodec : Codec[T]): Option[T] = {
-    reader.readBoolean(name+"Op") match {
-      case false => None
-      case _ => {
-        reader.readName(name);
-        Some(tCodec.decode(reader, decoderContext))
-      }
+  def readOption[T]
+    (name: String, reader: BsonReader, decoderContext: DecoderContext)
+    (implicit tCodec : Codec[T]): Option[T] =
+  {
+    reader.mark()
+    if (reader.readName()==name) {
+      reader.reset()
+      Some(tCodec.decode(reader, decoderContext))
+    } else {
+      reader.reset()
+      None
     }
   }
 
