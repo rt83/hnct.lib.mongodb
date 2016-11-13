@@ -63,6 +63,10 @@ class DefaultMongoDb(
 	override def closeDb: Future[Unit] = Future.successful(conn.close())
 
 	override def emptyDb: Future[Unit] = {
-		???
+		db.listCollectionNames().toFuture() map { colNames =>
+			colNames.foreach { cn =>
+				db.getCollection(cn).drop().toFuture().map(_ => Unit)
+			}
+		}
 	}
 }
