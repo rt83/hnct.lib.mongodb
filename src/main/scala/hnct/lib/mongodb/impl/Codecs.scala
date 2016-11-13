@@ -33,66 +33,63 @@ object Codecs {
       reader.readInt32()
     }
   }
-
-  //========================================================================================
-  // Internals
-  //========================================================================================
-
-  private def collectItems[T](
-    reader: BsonReader,
-    ctx : DecoderContext,
-    collected: Seq[T]
-  )(
-    implicit tCodec : Codec[T]
-  ): Seq[T] = reader.readBsonType match {
-    case BsonType.END_OF_DOCUMENT =>
-      collected.reverse
-    case _ =>
-      collectItems(reader, ctx, collected :+ tCodec.decode(reader, ctx))
-  }
-
-  //========================================================================================
-  // General read/write of Seq[T]
-  //========================================================================================
-
-	def readSeq[T](reader: BsonReader, ctx : DecoderContext)(implicit tCodec : Codec[T]) : Seq[T] = {
-		reader.readStartArray()
-		val seq = collectItems(reader, ctx, Seq[T]())
-		reader.readEndArray()
-		seq
+	
+	/**
+		* Internal trait that wraps around iterable and set
+		* @tparam T
+		* @tparam X
+		*/
+	private trait Addable[T, X[_]] { self =>
+		var col : X[T]
+		def +(elm : T) : Addable[T, X] = { colAdd(elm); self }
+		def colAdd(elm : T) : Unit
 	}
-
-  def readSeq[T](name: String, reader: BsonReader, ctx : DecoderContext)(implicit tCodec : Codec[T]) : Seq[T] = {
-    reader.readName(name)
-    readSeq[T](reader, ctx)
-  }
-
-	def writeSeq[T](s : Seq[T], writer : BsonWriter, ctx : EncoderContext)(implicit tCodec : Codec[T]): Unit = {
+	
+	private class SetAddable[T](override var col: Set[T]) extends Addable[T, Set] {
+		
+		override def colAdd(elm: T): Unit = col += elm
+		
+	}
+	
+	private class SeqAddable[T](override var col : Seq[T]) extends Addable[T, Seq] {
+		
+		override def colAdd(elm: T): Unit = col :+= elm
+		
+	}
+	
+	implicit private def convertSet[T](s : Set[T]) : SetAddable[T] = new SetAddable[T](s)
+	implicit private def convertSeq[T](s : Seq[T]) : SeqAddable[T] = new SeqAddable[T](s)
+	
+	private def readAddable[X[_],T](reader : BsonReader, ctx : DecoderContext, initial : Addable[T, X])(implicit tCodec : Codec[T]) : Addable[T, X] = {
+		reader.readStartArray()
+		var s = initial
+		
+		while (reader.readBsonType != BsonType.END_OF_DOCUMENT)
+			s += tCodec.decode(reader, ctx)
+		
+		reader.readEndArray()
+		s
+	}
+	
+	private def writeIterator[T](writer : BsonWriter, s : Iterable[T], ctx : EncoderContext)(implicit tCodec : Codec[T]) : Unit = {
 		writer.writeStartArray()
 		s.foreach(tCodec.encode(writer, _, ctx))
 		writer.writeEndArray()
 	}
-
-  def writeSeq[T](name : String, s : Seq[T], writer : BsonWriter, ctx : EncoderContext)(implicit tCodec : Codec[T]): Unit = {
-    writer.writeName(name)
-    writeSeq[T](s, writer, ctx)
-  }
-
-  //========================================================================================
-  // General read/write of Set[T]
-  //========================================================================================
-
-  def readSet[T](reader: BsonReader, ctx : DecoderContext)(implicit tCodec : Codec[T]) : Set[T] =
-    readSeq[T](reader, ctx).toSet
-
-  def readSet[T](name: String, reader: BsonReader, ctx : DecoderContext)(implicit tCodec : Codec[T]) : Set[T] =
-    readSeq[T](name, reader, ctx).toSet
-
-  def writeSet[T](s : Set[T], writer : BsonWriter, ctx : EncoderContext)(implicit tCodec : Codec[T]): Unit =
-    writeSeq[T](s.toSeq, writer, ctx)
-
-  def writeSet[T](name: String, s : Set[T], writer : BsonWriter, ctx : EncoderContext)(implicit tCodec : Codec[T]): Unit =
-    writeSeq[T](name, s.toSeq, writer, ctx)
+	
+	def readSet[T](reader: BsonReader, ctx : DecoderContext)(implicit tCodec : Codec[T]) : Set[T] = readAddable[Set, T](reader, ctx, Set[T]()).col
+	def writeSet[T](writer : BsonWriter, s : Set[T], ctx : EncoderContext)(implicit tCodec : Codec[T]) : Unit = writeIterator(writer, s, ctx)
+	def writeSet[T](writer : BsonWriter, name : String, s : Set[T], ctx : EncoderContext)(implicit tCodec : Codec[T]) : Unit = {
+		writer.writeName(name)
+		writeSet(writer, s, ctx)
+	}
+	
+	def readSeq[T](reader: BsonReader, ctx : DecoderContext)(implicit tCodec : Codec[T]) : Seq[T] = readAddable[Seq, T](reader, ctx, Seq[T]()).col
+	def writeSeq[T](writer : BsonWriter, s : Seq[T], ctx : EncoderContext)(implicit tCodec : Codec[T]) : Unit = writeIterator(writer, s, ctx)
+	def writeSeq[T](writer : BsonWriter, name : String, s : Seq[T], ctx : EncoderContext)(implicit tCodec : Codec[T]) : Unit = {
+		writer.writeName(name)
+		writeSeq(writer, s, ctx)
+	}
 
   //========================================================================================
   // General read/write of Option[T]
