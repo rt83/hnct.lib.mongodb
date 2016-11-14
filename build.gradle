@@ -14,8 +14,6 @@ configurations {
 */
 
 dependencies {
-	
-	compile 'org.mongodb:casbah_2.11:2.8.1'
 
 	compile group: 'org.mongodb.scala', name: 'mongo-scala-driver_2.11', version: '1.2.0-beta1'
 
