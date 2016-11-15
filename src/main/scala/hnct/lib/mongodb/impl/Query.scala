@@ -25,7 +25,7 @@ case class Query(field: String) {
   def <<=[T](value: T)(implicit t : ClassTag[T]) =
     Filters.lte[T](field, value)
 
-  def in[T](values: Seq[T])(implicit t : ClassTag[T]) =
+  def in[T](values: Iterable[T])(implicit t : ClassTag[T]) =
     Filters.in[T](field, values.toArray:_*)
 }
 
