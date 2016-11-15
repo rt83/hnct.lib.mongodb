@@ -25,13 +25,13 @@ case class Query(field: String) {
   def <<=[T](value: T)(implicit t : ClassTag[T]) =
     Filters.lte[T](field, value)
 
-  def in[T](values: Iterable[T])(implicit t : ClassTag[T]) =
+  def in[T](values: Traversable[T])(implicit t : ClassTag[T]) =
     Filters.in[T](field, values.toArray:_*)
 }
 
 object Query {
   implicit def toQuery(field: String) = new Query(field)
 
-  implicit def andSeq(filters: Seq[Bson]) =
+  implicit def andSeq(filters: Traversable[Bson]) =
     Filters.and(filters.toArray:_*)
 }
