@@ -9,7 +9,7 @@ import scala.reflect.ClassTag
   * Created by tduccuong on 15.11.16.
   */
 
-case class Query(field: String) {
+case class SingleQuery(field: String) {
   def ===[T](value: T)(implicit t : ClassTag[T]) =
     Filters.eq[T](field, value)
 
@@ -29,9 +29,22 @@ case class Query(field: String) {
     Filters.in[T](field, values.toArray:_*)
 }
 
-object Query {
-  implicit def toQuery(field: String) = new Query(field)
+case class JoinQuery(query: Bson) {
+  def and(thatQuery: Bson) = Filters.and(query, thatQuery)
 
-  implicit def andSeq(filters: Traversable[Bson]) =
-    Filters.and(filters.toArray:_*)
+  def or(thatQuery: Bson) = Filters.or(query, thatQuery)
+}
+
+case class MultipleQueries(queries: Traversable[Bson]) {
+  def asAndQuery = Filters.and(queries.toArray:_*)
+
+  def asOrQuery = Filters.or(queries.toArray:_*)
+}
+
+object Query {
+  implicit def toSingQuery(field: String) = new SingleQuery(field)
+
+  implicit def toMultipleQueries(queries: Traversable[Bson]) = new MultipleQueries(queries)
+
+  implicit def toJoinQuery(query: Bson) = new JoinQuery(query)
 }
