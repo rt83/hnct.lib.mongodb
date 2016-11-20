@@ -30,6 +30,13 @@ dependencies {
 
 	macrosCompile "org.scalameta:scalameta_2.11:1.2.0"
 	*/
+
+	// https://mvnrepository.com/artifact/com.google.inject/guice
+	compile group: 'com.google.inject', name: 'guice', version: '4.0'
+	// https://mvnrepository.com/artifact/com.google.inject.extensions/guice-multibindings
+	compile group: 'com.google.inject.extensions', name: 'guice-multibindings', version: '4.0'
+	// https://mvnrepository.com/artifact/com.google.inject.extensions/guice-assistedinject
+	compile group: 'com.google.inject.extensions', name: 'guice-assistedinject', version: '4.0'
 	
 	projDependency ':hnct.lib.utility', 'hnct:hnct.lib.utility:1.0.0-SNAPSHOT', true
 	

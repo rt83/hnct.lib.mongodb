@@ -1,5 +1,6 @@
 package hnct.lib.mongodb.impl
 
+import org.bson.codecs.configuration.CodecRegistries
 import org.bson.codecs.{Codec, _}
 import org.bson.{BsonReader, BsonType, BsonWriter}
 
@@ -11,28 +12,6 @@ import org.bson.{BsonReader, BsonType, BsonWriter}
   */
 
 object Codecs {
-
-  private val NONE = "none"
-
-	implicit val integerC = new IntegerCodec
-	implicit val stringC = new StringCodec
-	implicit val longC = new LongCodec
-	implicit val boolC = new BooleanCodec
-	implicit val doubleC = new DoubleCodec
-	implicit val floatC = new FloatCodec
-  implicit val objectIdC = new ObjectIdCodec
-
-  implicit object IntCodec extends Codec[Int] {
-    override def encode(writer: BsonWriter, value: Int, encoderContext: EncoderContext): Unit = {
-      writer.writeInt32(value)
-    }
-
-    override def getEncoderClass: Class[Int] = classOf[Int]
-
-    override def decode(reader: BsonReader, decoderContext: DecoderContext) = {
-      reader.readInt32()
-    }
-  }
 	
 	/**
 		* Internal trait that wraps around iterable and set

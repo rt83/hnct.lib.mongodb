@@ -1,25 +1,32 @@
 package hnct.lib.mongodb.impl
 
+import java.util.{Set => JSet}
+import javax.inject.Inject
+
+import com.google.inject.assistedinject.Assisted
 import hnct.lib.mongodb.api.MongoDb
-import org.bson.codecs.configuration.CodecRegistry
+import org.bson.codecs.configuration.{CodecRegistries, CodecRegistry}
 import org.mongodb.scala.bson.conversions.Bson
 import org.mongodb.scala.{MongoClient, MongoCollection, MongoDatabase}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.reflect.ClassTag
+import collection.JavaConverters._
 
 /**
 	* Created by Ryan on 11/6/2016.
 	*/
-class DefaultMongoDb(
-   host : String, port : Int,
-   override val codecs: CodecRegistry,
-   override val dbName: String
+class DefaultMongoDb @Inject() (
+   @Assisted("host") host : String, @Assisted() port : Int, @Assisted("db") override val dbName: String,
+   val _codecs: JSet[CodecRegistry]   // to be injected through set binding
+                               
 ) extends MongoDb {
 	
+	override val codecs : Set[CodecRegistry] = _codecs.asScala.toSet
+	
 	override val conn: MongoClient = MongoClient(s"mongodb://$host:$port")
-	override val db : MongoDatabase = conn.getDatabase(dbName).withCodecRegistry(codecs)
+	override val db : MongoDatabase = conn.getDatabase(dbName).withCodecRegistry(CodecRegistries.fromRegistries(codecs.toArray:_*))
 	
 	override def col[T](name: String)(implicit t : ClassTag[T]): MongoCollection[T] = db.getCollection[T](name)
 

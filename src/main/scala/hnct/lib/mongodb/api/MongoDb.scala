@@ -19,7 +19,7 @@ trait MongoDb {
 	val conn : MongoClient
 	
 	// the codecs used for the applications
-	val codecs : CodecRegistry
+	val codecs : Set[CodecRegistry]
 	
 	val dbName : String
 	
