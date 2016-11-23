@@ -55,22 +55,39 @@ trait MongoDb {
 	def query[T](query: Bson, nReturn: Int = 0)(implicit t : ClassTag[T]) : Future[Seq[T]]
 
 	/**
-		* Bulk save/update a list of models in db
+		* Bulk insert a list of models in db
 		* @param models
 		* @param t
 		* @tparam T
 		* @return
 		*/
-	def persist[T](models: Seq[T])(implicit t: ClassTag[T]): Future[Unit]
+	def insert[T](models: Seq[T])(implicit t: ClassTag[T]): Future[Unit]
 
 	/**
-		* Save/update a model in db.
+		* Insert a model in db.
 		* @param model
 		* @param t
 		* @tparam T
 		* @return
 		*/
-	def persist[T](model: T)(implicit t: ClassTag[T]): Future[Unit]
+	def insert[T](model: T)(implicit t: ClassTag[T]): Future[Unit]
+
+	/**
+		* Bulk update a list of models in db.
+		* Note: This calls the update(model) method so it is
+		* not really efficient. Use with care.
+		* @param models
+		* @param t
+		* @return
+		*/
+	def update[IdType, DocType <: MongoDbM[IdType]](models: Seq[DocType])(implicit t: ClassTag[DocType]): Future[Unit]
+
+	/**
+		* Update a model in db.
+		* @param t
+		* @return
+		*/
+	def update[IdType, DocType <: MongoDbM[IdType]](model: DocType)(implicit t: ClassTag[DocType]): Future[Unit]
 
 	/**
 		* Delete models in db given criteria.

@@ -4,10 +4,11 @@ import java.util.{Set => JSet}
 import javax.inject.Inject
 
 import com.google.inject.assistedinject.Assisted
-import hnct.lib.mongodb.api.MongoDb
+import hnct.lib.mongodb.api.{MongoDb, MongoDbM}
 import org.bson.codecs.configuration.{CodecRegistries, CodecRegistry}
 import org.mongodb.scala.bson.conversions.Bson
 import org.mongodb.scala.{MongoClient, MongoCollection, MongoDatabase}
+import org.mongodb.scala.model.Filters._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -28,41 +29,53 @@ class DefaultMongoDb @Inject() (
 	override val conn: MongoClient = MongoClient(s"mongodb://$host:$port")
 	override val db : MongoDatabase = conn.getDatabase(dbName).withCodecRegistry(CodecRegistries.fromRegistries(codecs.toArray:_*))
 	
-	override def col[T](name: String)(implicit t : ClassTag[T]): MongoCollection[T] = db.getCollection[T](name)
+	override def col[DocTyp](name: String)(implicit t : ClassTag[DocTyp]): MongoCollection[DocTyp] = db.getCollection[DocTyp](name)
 
-	private def colName[T](implicit t : ClassTag[T]) = t.runtimeClass.getSimpleName
+	private def colName[DocTyp](implicit t : ClassTag[DocTyp]) = t.runtimeClass.getSimpleName
 
-	override def fetch[T](nReturn: Int = 0)(implicit t : ClassTag[T]): Future[Seq[T]] = {
-		val c = col[T](colName)
+	override def fetch[DocTyp](nReturn: Int = 0)(implicit t : ClassTag[DocTyp]): Future[Seq[DocTyp]] = {
+		val c = col[DocTyp](colName)
 		
-		if (nReturn == 0) c.find[T].toFuture()
-		else c.find[T].limit(nReturn).toFuture()
+		if (nReturn == 0) c.find[DocTyp].toFuture()
+		else c.find[DocTyp].limit(nReturn).toFuture()
 	}
 	
-	override def query[T](query: Bson, nReturn: Int = 0)(implicit t : ClassTag[T]) : Future[Seq[T]] = {
-		val c = col[T](colName)
+	override def query[DocTyp](query: Bson, nReturn: Int = 0)(implicit t : ClassTag[DocTyp]) : Future[Seq[DocTyp]] = {
+		val c = col[DocTyp](colName)
 
-		if (nReturn == 0) c.find[T](query).toFuture()
-		else c.find[T](query).limit(nReturn).toFuture()
+		if (nReturn == 0) c.find[DocTyp](query).toFuture()
+		else c.find[DocTyp](query).limit(nReturn).toFuture()
 	}
 
-	override def persist[T](models: Seq[T])(implicit t: ClassTag[T]): Future[Unit] = {
-		col[T](colName).insertMany(models).toFuture().map { _ =>
+	override def insert[DocTyp](models: Seq[DocTyp])(implicit t: ClassTag[DocTyp]): Future[Unit] = {
+		col[DocTyp](colName).insertMany(models).toFuture().map { _ =>
 			Unit	// if future completed, always return true
 		}
 	}
 
-	override def persist[T](model: T)(implicit t: ClassTag[T]): Future[Unit] = {
-		col[T](colName).insertOne(model).toFuture().map { _ =>
+	override def insert[DocTyp](model: DocTyp)(implicit t: ClassTag[DocTyp]): Future[Unit] = {
+		col[DocTyp](colName).insertOne(model).toFuture().map { _ =>
 			Unit
 		}
 	}
 
-	override def delete[T](query: Bson)(implicit t : ClassTag[T]) : Future[Unit] =
-		col[T](colName).deleteMany(query).toFuture().map(_ => Unit)
+	override def update[IdTyp, DocTyp <: MongoDbM[IdTyp]](model: DocTyp)(implicit t: ClassTag[DocTyp]): Future[Unit] = {
+		col[DocTyp](colName)
+			.replaceOne(equal("_id", model._id), model)
+			.toFuture().map { _ => Unit }
+	}
 
-	override def clear[T](implicit t : ClassTag[T]) : Future[Unit] = {
-		col[T](colName).drop().toFuture().map { _ =>
+	override def update[IdTyp, DocTyp <: MongoDbM[IdTyp]](models: Seq[DocTyp])(implicit t: ClassTag[DocTyp]): Future[Unit] = {
+		models.map { model =>
+			update[IdTyp, DocTyp](model)
+		}.foldLeft(Future[Unit]()){ (acc, _) => acc }
+	}
+
+	override def delete[DocTyp](query: Bson)(implicit t : ClassTag[DocTyp]) : Future[Unit] =
+		col[DocTyp](colName).deleteMany(query).toFuture().map(_ => Unit)
+
+	override def clear[DocTyp](implicit t : ClassTag[DocTyp]) : Future[Unit] = {
+		col[DocTyp](colName).drop().toFuture().map { _ =>
 			db.createCollection(colName).toFuture().map { _ => Unit }
 		}
 	}
