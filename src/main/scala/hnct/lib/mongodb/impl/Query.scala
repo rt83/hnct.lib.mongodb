@@ -42,9 +42,9 @@ case class MultipleQueries(queries: Traversable[Bson]) {
 }
 
 object Query {
-  implicit def toSingQuery(field: String) = new SingleQuery(field)
+  implicit def toSingQuery(field: String) = SingleQuery(field)
 
-  implicit def toMultipleQueries(queries: Traversable[Bson]) = new MultipleQueries(queries)
+  implicit def toMultipleQueries(queries: Traversable[Bson]) = MultipleQueries(queries)
 
-  implicit def toJoinQuery(query: Bson) = new JoinQuery(query)
+  implicit def toJoinQuery(query: Bson) = JoinQuery(query)
 }
