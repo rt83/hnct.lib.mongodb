@@ -24,7 +24,7 @@ trait MongoDb {
 	val dbName : String
 	
 	val db : MongoDatabase
-
+	
 	/**
 		* Get collection by name from db. Supposed to be used by
 		* implementation class of this trait
@@ -34,7 +34,9 @@ trait MongoDb {
 		* @return
 		*/
 	protected def col[T](name : String)(implicit t : ClassTag[T]) : MongoCollection[T]
-
+	
+	def col[T](implicit t : ClassTag[T]) : MongoCollection[T]
+	
 	/**
 		* Fetch all models of type T in db limited to nReturn number of models.
 		* @param nReturn

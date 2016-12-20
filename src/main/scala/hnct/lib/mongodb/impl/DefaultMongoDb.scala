@@ -89,4 +89,6 @@ class DefaultMongoDb @Inject() (
 			}
 		}
 	}
+	
+	override def col[DocTyp](implicit t: ClassTag[DocTyp]): MongoCollection[DocTyp] = col[DocTyp](colName)
 }
