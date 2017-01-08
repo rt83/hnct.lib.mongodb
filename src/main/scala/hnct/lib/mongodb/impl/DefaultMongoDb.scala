@@ -68,7 +68,7 @@ class DefaultMongoDb @Inject() (
 	override def update[IdTyp, DocTyp <: MongoDbM[IdTyp]](models: Seq[DocTyp])(implicit t: ClassTag[DocTyp]): Future[Unit] = {
 		models.map { model =>
 			update[IdTyp, DocTyp](model)
-		}.foldLeft(Future.successful()){ (acc, _) => acc }
+		}.foldLeft(Future {}){ (acc, _) => acc }
 	}
 
 	override def delete[DocTyp](query: Bson)(implicit t : ClassTag[DocTyp]) : Future[Unit] =
