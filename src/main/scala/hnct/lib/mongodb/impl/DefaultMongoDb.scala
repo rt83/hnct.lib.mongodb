@@ -7,8 +7,9 @@ import com.google.inject.assistedinject.Assisted
 import hnct.lib.mongodb.api.{MongoDb, MongoDbM}
 import org.bson.codecs.configuration.{CodecRegistries, CodecRegistry}
 import org.mongodb.scala.bson.conversions.Bson
-import org.mongodb.scala.{MongoClient, MongoCollection, MongoDatabase}
+import org.mongodb.scala.{Document, MongoClient, MongoCollection, MongoDatabase, Observable}
 import org.mongodb.scala.model.Filters._
+import org.mongodb.scala.model.IndexOptions
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -32,6 +33,11 @@ class DefaultMongoDb @Inject() (
 	override def col[DocTyp](name: String)(implicit t : ClassTag[DocTyp]): MongoCollection[DocTyp] = db.getCollection[DocTyp](name)
 
 	private def colName[DocTyp](implicit t : ClassTag[DocTyp]) = t.runtimeClass.getSimpleName
+
+	def createIndex[DocTyp](key: Document, options: IndexOptions)(implicit t : ClassTag[DocTyp]): Future[Seq[String]] = {
+		val c = col[DocTyp](colName)
+		c.createIndex(key, options).toFuture()
+	}
 
 	override def fetch[DocTyp](nReturn: Int = 0)(implicit t : ClassTag[DocTyp]): Future[Seq[DocTyp]] = {
 		val c = col[DocTyp](colName)

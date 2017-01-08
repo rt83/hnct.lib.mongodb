@@ -3,6 +3,7 @@ package hnct.lib.mongodb.api
 import org.bson.codecs.configuration.CodecRegistry
 import org.mongodb.scala._
 import org.mongodb.scala.bson.conversions.Bson
+import org.mongodb.scala.model.IndexOptions
 
 import scala.concurrent.Future
 import scala.reflect.ClassTag
@@ -37,6 +38,14 @@ trait MongoDb {
 	
 	def col[T](implicit t : ClassTag[T]) : MongoCollection[T]
 	
+	/**
+		* Create index for this model collection
+		* @param key
+		* @tparam T
+		* @return
+		*/
+	def createIndex[T](key: Document, options: IndexOptions)(implicit t : ClassTag[T]): Future[Seq[String]]
+
 	/**
 		* Fetch all models of type T in db limited to nReturn number of models.
 		* @param nReturn
