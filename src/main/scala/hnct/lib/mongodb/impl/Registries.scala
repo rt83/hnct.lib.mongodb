@@ -1,5 +1,7 @@
 package hnct.lib.mongodb.impl
 
+import java.time.LocalDateTime
+
 import org.bson.{BsonReader, BsonWriter}
 import org.bson.codecs._
 import org.bson.codecs.configuration.CodecRegistries
@@ -21,7 +23,7 @@ object Registries {
 	// the registry containing all primitive codec
 	val primitives = CodecRegistries.fromCodecs(
 		integerC, stringC, longC, boolC, doubleC, floatC, objectIdC,
-		IntCodec, LongCodec, DoubleCodec, BooleanCodec)
+		IntCodec, LongCodec, DoubleCodec, BooleanCodec, LocalDateTimeCodec)
 	
 }
 
@@ -70,5 +72,17 @@ object BooleanCodec extends Codec[Boolean] {
 	
 	override def decode(reader: BsonReader, decoderContext: DecoderContext) = {
 		reader.readBoolean()
+	}
+}
+
+object LocalDateTimeCodec extends Codec[LocalDateTime] {
+	override def encode(writer: BsonWriter, value: LocalDateTime, encoderContext: EncoderContext): Unit = {
+		writer.writeString(value.toString)
+	}
+
+	override def getEncoderClass: Class[Boolean] = classOf[Boolean]
+
+	override def decode(reader: BsonReader, decoderContext: DecoderContext) = {
+		LocalDateTime.parse(reader.readString())
 	}
 }
