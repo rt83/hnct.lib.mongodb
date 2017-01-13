@@ -1,6 +1,5 @@
 package hnct.lib.mongodb.impl
 
-import org.bson.codecs.configuration.CodecRegistries
 import org.bson.codecs.{Codec, _}
 import org.bson.{BsonReader, BsonType, BsonWriter}
 
@@ -110,7 +109,31 @@ object Codecs {
 		writeSeq(s, writer, ctx)
 	}
 
-  //========================================================================================
+	//========================================================================================
+	// General read/write of Map[A, B]
+	//========================================================================================
+
+	def writeMap[A, B]
+		(m: Map[A, B], writer : BsonWriter, ctx : EncoderContext)
+		(implicit codec : Codec[B]) : Unit =
+	{
+		writer.writeStartDocument()
+		m.foreach { case (k, v) =>
+			writer.writeName(k.toString)
+			codec.encode(writer, v, ctx)
+		}
+		writer.writeEndDocument()
+	}
+
+	def writeMap[A, B]
+		(name: String, m: Map[A, B], writer : BsonWriter, ctx : EncoderContext)
+		(implicit codec : Codec[B]) : Unit =
+	{
+		writer.writeName(name)
+		writeMap(m, writer, ctx)
+	}
+
+	//========================================================================================
   // General read/write of Option[T]
   //========================================================================================
 

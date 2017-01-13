@@ -10,8 +10,6 @@ import org.bson.codecs.configuration.CodecRegistries
 	* Created by Ryan on 11/20/2016.
 	*/
 object Registries {
-	private val NONE = "none"
-	
 	implicit val integerC = new IntegerCodec
 	implicit val stringC = new StringCodec
 	implicit val longC = new LongCodec
@@ -80,7 +78,7 @@ object LocalDateTimeCodec extends Codec[LocalDateTime] {
 		writer.writeString(value.toString)
 	}
 
-	override def getEncoderClass: Class[Boolean] = classOf[Boolean]
+	override def getEncoderClass: Class[LocalDateTime] = classOf[LocalDateTime]
 
 	override def decode(reader: BsonReader, decoderContext: DecoderContext) = {
 		LocalDateTime.parse(reader.readString())
