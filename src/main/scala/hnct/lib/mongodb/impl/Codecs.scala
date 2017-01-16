@@ -133,6 +133,29 @@ object Codecs {
 		writeMap(m, writer, ctx)
 	}
 
+	def readMap[A, B]
+		(reader: BsonReader, decoderContext: DecoderContext)
+		(implicit aCodec: Codec[A], bCodec: Codec[B], keyConverter: String => A): Map[A, B] =
+	{
+		var map = Map[A, B]()
+		reader.readStartDocument()
+		while (reader.readBsonType != BsonType.END_OF_DOCUMENT) {
+			val key = reader.readName()
+			val value = bCodec.decode(reader, decoderContext)
+			map += (keyConverter(key) -> value)
+		}
+		reader.readEndDocument()
+		map
+	}
+
+	def readMap[A, B]
+		(name: String, reader: BsonReader, decoderContext: DecoderContext)
+		(implicit aCodec: Codec[A], bCodec: Codec[B], keyConverter: String => A): Map[A, B] =
+	{
+		reader.readName(name)
+		readMap[A, B](reader, decoderContext)
+	}
+
 	//========================================================================================
   // General read/write of Option[T]
   //========================================================================================
