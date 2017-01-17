@@ -39,6 +39,11 @@ class DefaultMongoDb @Inject() (
 		c.createIndex(key, options).toFuture()
 	}
 
+	def createIndex[DocTyp](key: Document)(implicit t : ClassTag[DocTyp]): Future[Seq[String]] = {
+		val c = col[DocTyp](colName)
+		c.createIndex(key).toFuture()
+	}
+
 	override def fetch[DocTyp](nReturn: Int = 0)(implicit t : ClassTag[DocTyp]): Future[Seq[DocTyp]] = {
 		val c = col[DocTyp](colName)
 		

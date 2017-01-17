@@ -47,6 +47,14 @@ trait MongoDb {
 	def createIndex[T](key: Document, options: IndexOptions)(implicit t : ClassTag[T]): Future[Seq[String]]
 
 	/**
+		* Create index for this model collection
+		* @param key
+		* @tparam T
+		* @return
+		*/
+	def createIndex[T](key: Document)(implicit t : ClassTag[T]): Future[Seq[String]]
+
+	/**
 		* Fetch all models of type T in db limited to nReturn number of models.
 		* @param nReturn
 		* @param t
