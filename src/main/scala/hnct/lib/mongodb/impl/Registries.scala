@@ -16,6 +16,7 @@ object Registries {
 		new org.bson.codecs.DoubleCodec,
 		new org.bson.codecs.FloatCodec,
 		new org.bson.codecs.ObjectIdCodec,
+		new org.bson.codecs.BooleanCodec,
 
 		// self-written codecs
 		IntCodec,
