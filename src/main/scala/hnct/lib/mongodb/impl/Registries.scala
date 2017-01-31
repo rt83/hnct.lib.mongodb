@@ -10,28 +10,28 @@ import org.bson.codecs.configuration.CodecRegistries
 	* Created by Ryan on 11/20/2016.
 	*/
 object Registries {
-	implicit val integerC = new IntegerCodec
-	implicit val stringC = new StringCodec
-	implicit val longC = new LongCodec
-	implicit val boolC = new BooleanCodec
-	implicit val doubleC = new DoubleCodec
-	implicit val floatC = new FloatCodec
-	implicit val objectIdC = new ObjectIdCodec
-	
-	// the registry containing all primitive codec
 	val primitives = CodecRegistries.fromCodecs(
-		integerC, stringC, longC, boolC, doubleC, floatC, objectIdC,
-		IntCodec, LongCodec, DoubleCodec, BooleanCodec, LocalDateTimeCodec)
-	
+		new org.bson.codecs.StringCodec,
+		new org.bson.codecs.BsonBooleanCodec,
+		new org.bson.codecs.DoubleCodec,
+		new org.bson.codecs.FloatCodec,
+		new org.bson.codecs.ObjectIdCodec,
+
+		// self-written codecs
+		IntCodec,
+		LongCodec,
+		DoubleCodec,
+		LocalDateTimeCodec
+	)
 }
 
 object IntCodec extends Codec[Int] {
 	override def encode(writer: BsonWriter, value: Int, encoderContext: EncoderContext): Unit = {
 		writer.writeInt32(value)
 	}
-	
+
 	override def getEncoderClass: Class[Int] = classOf[Int]
-	
+
 	override def decode(reader: BsonReader, decoderContext: DecoderContext) = {
 		reader.readInt32()
 	}

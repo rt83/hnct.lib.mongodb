@@ -7,7 +7,7 @@ import com.google.inject.assistedinject.Assisted
 import hnct.lib.mongodb.api.{MongoDb, MongoDbM}
 import org.bson.codecs.configuration.{CodecRegistries, CodecRegistry}
 import org.mongodb.scala.bson.conversions.Bson
-import org.mongodb.scala.{Document, MongoClient, MongoCollection, MongoDatabase, Observable}
+import org.mongodb.scala.{Document, MongoClient, MongoCollection, MongoDatabase}
 import org.mongodb.scala.model.Filters._
 import org.mongodb.scala.model.IndexOptions
 

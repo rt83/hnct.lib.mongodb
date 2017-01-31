@@ -1,6 +1,6 @@
 package hnct.lib.mongodb.impl
 
-import org.bson.conversions.Bson
+import org.mongodb.scala.bson.conversions.Bson
 import org.mongodb.scala.model.Filters
 
 import scala.reflect.ClassTag
@@ -24,6 +24,8 @@ case class SingleQuery(field: String) {
 
   def <<=[T](value: T)(implicit t : ClassTag[T]) =
     Filters.lte[T](field, value)
+
+  def occurs = Filters.exists(field)
 
   def in[T](values: Traversable[T])(implicit t : ClassTag[T]) =
     Filters.in[T](field, values.toArray:_*)
