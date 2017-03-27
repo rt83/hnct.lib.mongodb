@@ -107,7 +107,18 @@ trait MongoDb {
 		* @return
 		*/
 	def update[IdType, DocType <: MongoDbM[IdType]](model: DocType)(implicit t: ClassTag[DocType]): Future[Unit]
-
+	
+	/**
+		* Update method that find and update a single document and then return the updated document
+		* @param query the query to find the document
+		* @param update the update clause specifying what to be updated
+		* @param t the class tag of the document type
+		* @tparam IdTyp type of id
+		* @tparam DocTyp type of document
+		* @return
+		*/
+	def updateOne[IdTyp, DocTyp <: MongoDbM[IdTyp]](query : Bson, update : Bson)(implicit t: ClassTag[DocTyp]): Future[Seq[DocTyp]]
+	
 	/**
 		* Delete models in db given criteria.
 		* @param conds
