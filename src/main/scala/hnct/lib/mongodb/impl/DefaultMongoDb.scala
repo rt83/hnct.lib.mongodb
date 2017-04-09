@@ -34,12 +34,12 @@ class DefaultMongoDb @Inject() (
 
 	private def colName[DocTyp](implicit t : ClassTag[DocTyp]) = t.runtimeClass.getSimpleName
 
-	def createIndex[DocTyp](key: Document, options: IndexOptions)(implicit t : ClassTag[DocTyp]): Future[Seq[String]] = {
+	def createIndex[DocTyp](key: Document, options: IndexOptions)(implicit t : ClassTag[DocTyp]): Future[String] = {
 		val c = col[DocTyp](colName)
 		c.createIndex(key, options).toFuture()
 	}
 
-	def createIndex[DocTyp](key: Document)(implicit t : ClassTag[DocTyp]): Future[Seq[String]] = {
+	def createIndex[DocTyp](key: Document)(implicit t : ClassTag[DocTyp]): Future[String] = {
 		val c = col[DocTyp](colName)
 		c.createIndex(key).toFuture()
 	}
@@ -82,7 +82,7 @@ class DefaultMongoDb @Inject() (
 		}.foldLeft(Future {}){ (acc, _) => acc }
 	}
 	
-	override def updateOne[IdTyp, DocTyp <: MongoDbM[IdTyp]](query : Bson, update : Bson)(implicit t: ClassTag[DocTyp]): Future[Seq[DocTyp]] = {
+	override def updateOne[IdTyp, DocTyp <: MongoDbM[IdTyp]](query : Bson, update : Bson)(implicit t: ClassTag[DocTyp]): Future[DocTyp] = {
 		col[DocTyp](colName).findOneAndUpdate(query, update).toFuture()
 	}
 

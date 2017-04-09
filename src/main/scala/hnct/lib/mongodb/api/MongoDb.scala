@@ -44,7 +44,7 @@ trait MongoDb {
 		* @tparam T
 		* @return
 		*/
-	def createIndex[T](key: Document, options: IndexOptions)(implicit t : ClassTag[T]): Future[Seq[String]]
+	def createIndex[T](key: Document, options: IndexOptions)(implicit t : ClassTag[T]): Future[String]
 
 	/**
 		* Create index for this model collection
@@ -52,7 +52,7 @@ trait MongoDb {
 		* @tparam T
 		* @return
 		*/
-	def createIndex[T](key: Document)(implicit t : ClassTag[T]): Future[Seq[String]]
+	def createIndex[T](key: Document)(implicit t : ClassTag[T]): Future[String]
 
 	/**
 		* Fetch all models of type T in db limited to nReturn number of models.
@@ -117,7 +117,7 @@ trait MongoDb {
 		* @tparam DocTyp type of document
 		* @return
 		*/
-	def updateOne[IdTyp, DocTyp <: MongoDbM[IdTyp]](query : Bson, update : Bson)(implicit t: ClassTag[DocTyp]): Future[Seq[DocTyp]]
+	def updateOne[IdTyp, DocTyp <: MongoDbM[IdTyp]](query : Bson, update : Bson)(implicit t: ClassTag[DocTyp]): Future[DocTyp]
 	
 	/**
 		* Delete models in db given criteria.
