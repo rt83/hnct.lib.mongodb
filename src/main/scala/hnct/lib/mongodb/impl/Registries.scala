@@ -19,6 +19,7 @@ object Registries {
 		new org.bson.codecs.BooleanCodec,
 		new org.bson.codecs.BsonObjectIdCodec,
 		new org.bson.codecs.IntegerCodec,
+		new org.bson.codecs.BsonNullCodec,
 
 		// self-written codecs
 		IntCodec,
