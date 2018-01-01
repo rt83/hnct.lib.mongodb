@@ -5,7 +5,7 @@
 version = '1.0.0'
 group = 'hnct'
 
-ext.scalaVersion = '2.11.8'
+ext.scalaVersion = '2.12.4'
 
 /* configuration to configure zinc compiler. To enable when sbt zinc is included in Gradle
 configurations {
@@ -15,9 +15,11 @@ configurations {
 
 dependencies {
 
-	compile group: 'org.mongodb.scala', name: 'mongo-scala-driver_2.11', version: '2.0.0'
+	// https://mvnrepository.com/artifact/org.mongodb.scala/mongo-scala-driver
+	compile group: 'org.mongodb.scala', name: 'mongo-scala-driver_2.12', version: '2.2.0'
 
-	compile 'org.json4s:json4s-jackson_2.11:3.2.11'
+
+	//compile 'org.json4s:json4s-jackson_2.11:3.2.11'
 	
 	/* Dependency needed to configure plugin for the compiler that allow the use of scalameta for macro writing. Current disabled because
 	zinc compiler used by gradle is outdated (use scala 2.10.x while scalameta is only available in scala 2.11 onward.
