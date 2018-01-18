@@ -13,3 +13,6 @@
 /build/
 build-settings.properties
 .settings/
+/*.iml
+/*.ipr
+/*.iws
