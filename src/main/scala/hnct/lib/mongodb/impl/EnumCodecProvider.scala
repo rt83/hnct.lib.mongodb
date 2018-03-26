@@ -10,9 +10,6 @@ object EnumCodecProvider {
     override def get[T](clazz: Class[T], registry: CodecRegistry): Codec[T] = {
 
       val codec = if (c == clazz) {
-
-        println("OKOK\n\n\n")
-
         new Codec[E] {
           override def encode(writer: BsonWriter, value: E, encoderContext: EncoderContext): Unit = {
             writer.writeString(value.toString())
