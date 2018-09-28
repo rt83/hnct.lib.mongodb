@@ -2,6 +2,7 @@ package hnct.lib.mongodb.api
 
 import org.bson.codecs.configuration.CodecRegistry
 import org.mongodb.scala._
+import org.mongodb.scala.bson.ObjectId
 import org.mongodb.scala.bson.conversions.Bson
 import org.mongodb.scala.model.IndexOptions
 
@@ -92,21 +93,13 @@ trait MongoDb {
 	def insert[T](model: T)(implicit t: ClassTag[T]): Future[Unit]
 
 	/**
-		* Bulk update a list of models in db.
-		* Note: This calls the update(model) method so it is
-		* not really efficient. Use with care.
-		* @param models
-		* @param t
-		* @return
-		*/
-	def update[IdType, DocType <: MongoDbM[IdType]](models: Seq[DocType])(implicit t: ClassTag[DocType]): Future[Unit]
-
-	/**
 		* Update a model in db.
 		* @param t
 		* @return
 		*/
-	def update[IdType, DocType <: MongoDbM[IdType]](model: DocType)(implicit t: ClassTag[DocType]): Future[Unit]
+	def update[DocType](model: DocType, id : String)(implicit t: ClassTag[DocType]): Future[Unit]
+
+	def update[DocType](model: DocType, id : ObjectId)(implicit t: ClassTag[DocType]): Future[Unit]
 	
 	/**
 		* Update method that find and update a single document and then return the updated document
@@ -117,7 +110,7 @@ trait MongoDb {
 		* @tparam DocTyp type of document
 		* @return
 		*/
-	def updateOne[IdTyp, DocTyp <: MongoDbM[IdTyp]](query : Bson, update : Bson)(implicit t: ClassTag[DocTyp]): Future[DocTyp]
+	def updateOne[DocTyp](query : Bson, update : Bson)(implicit t: ClassTag[DocTyp]): Future[DocTyp]
 	
 	/**
 		* Delete models in db given criteria.

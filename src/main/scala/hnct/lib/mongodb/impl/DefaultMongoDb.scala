@@ -4,8 +4,9 @@ import java.util.{Set => JSet}
 import javax.inject.Inject
 
 import com.google.inject.assistedinject.Assisted
-import hnct.lib.mongodb.api.{MongoDb, MongoDbM}
+import hnct.lib.mongodb.api.MongoDb
 import org.bson.codecs.configuration.{CodecRegistries, CodecRegistry}
+import org.mongodb.scala.bson.ObjectId
 import org.mongodb.scala.bson.conversions.Bson
 import org.mongodb.scala.{Document, MongoClient, MongoCollection, MongoDatabase}
 import org.mongodb.scala.model.Filters._
@@ -70,19 +71,19 @@ class DefaultMongoDb @Inject() (
 		}
 	}
 
-	override def update[IdTyp, DocTyp <: MongoDbM[IdTyp]](model: DocTyp)(implicit t: ClassTag[DocTyp]): Future[Unit] = {
+	override def update[DocTyp](model: DocTyp, id : String)(implicit t: ClassTag[DocTyp]): Future[Unit] = {
 		col[DocTyp](colName)
-			.replaceOne(equal("_id", model._id), model)
+			.replaceOne(equal("_id", new ObjectId(id)), model)
 			.toFuture().map { _ => Unit }
 	}
 
-	override def update[IdTyp, DocTyp <: MongoDbM[IdTyp]](models: Seq[DocTyp])(implicit t: ClassTag[DocTyp]): Future[Unit] = {
-		models.map { model =>
-			update[IdTyp, DocTyp](model)
-		}.foldLeft(Future {}){ (acc, _) => acc }
+	override def update[DocTyp](model: DocTyp, id : ObjectId)(implicit t: ClassTag[DocTyp]): Future[Unit] = {
+		col[DocTyp](colName)
+			.replaceOne(equal("_id", id), model)
+			.toFuture().map { _ => Unit }
 	}
 	
-	override def updateOne[IdTyp, DocTyp <: MongoDbM[IdTyp]](query : Bson, update : Bson)(implicit t: ClassTag[DocTyp]): Future[DocTyp] = {
+	override def updateOne[DocTyp](query : Bson, update : Bson)(implicit t: ClassTag[DocTyp]): Future[DocTyp] = {
 		col[DocTyp](colName).findOneAndUpdate(query, update).toFuture()
 	}
 
