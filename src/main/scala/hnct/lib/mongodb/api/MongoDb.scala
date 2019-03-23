@@ -64,6 +64,8 @@ trait MongoDb {
 		*/
 	def fetch[T](nReturn : Int = 0)(implicit t : ClassTag[T]) : Future[Seq[T]]
 
+	def fetchSort[T](sort : Bson, nReturn : Int = 0)(implicit t : ClassTag[T]) : Future[Seq[T]]
+
 	/**
 		* Fetch models of type T from db given a query
 		* @param query
@@ -73,6 +75,8 @@ trait MongoDb {
 		* @return
 		*/
 	def query[T](query: Bson, nReturn: Int = 0)(implicit t : ClassTag[T]) : Future[Seq[T]]
+
+	def querySort[DocTyp](query: Bson, sort : Bson, nReturn: Int = 0)(implicit t : ClassTag[DocTyp]) : Future[Seq[DocTyp]]
 
 	/**
 		* Bulk insert a list of models in db

@@ -11,7 +11,7 @@ group = "hnct"
 
 hnct {
 	lang {
-		scala version:"2.12.4"
+		scala version:"2.12.8"
 	}
 }
 
@@ -24,7 +24,7 @@ dependencies {
 	}
 
 	// https://mvnrepository.com/artifact/org.mongodb.scala/mongo-scala-driver
-	compile group: 'org.mongodb.scala', name: 'mongo-scala-driver_2.12', version: '2.2.0'
+	compile group: 'org.mongodb.scala', name: 'mongo-scala-driver_2.12', version: '2.6.0'
 	// https://mvnrepository.com/artifact/com.google.inject/guice
 	compile group: 'com.google.inject', name: 'guice', version: '4.0'
 	// https://mvnrepository.com/artifact/com.google.inject.extensions/guice-multibindings

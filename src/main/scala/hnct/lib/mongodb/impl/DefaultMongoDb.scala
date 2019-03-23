@@ -51,12 +51,26 @@ class DefaultMongoDb @Inject() (
 		if (nReturn == 0) c.find[DocTyp].toFuture()
 		else c.find[DocTyp].limit(nReturn).toFuture()
 	}
+
+	override def fetchSort[DocTyp](sort : Bson, nReturn: Int = 0)(implicit t : ClassTag[DocTyp]): Future[Seq[DocTyp]] = {
+		val c = col[DocTyp](colName)
+
+		if (nReturn == 0) c.find[DocTyp].sort(sort).toFuture()
+		else c.find[DocTyp].sort(sort).limit(nReturn).toFuture()
+	}
 	
 	override def query[DocTyp](query: Bson, nReturn: Int = 0)(implicit t : ClassTag[DocTyp]) : Future[Seq[DocTyp]] = {
 		val c = col[DocTyp](colName)
 
 		if (nReturn == 0) c.find[DocTyp](query).toFuture()
 		else c.find[DocTyp](query).limit(nReturn).toFuture()
+	}
+
+	override def querySort[DocTyp](query: Bson, sort : Bson, nReturn: Int = 0)(implicit t : ClassTag[DocTyp]) : Future[Seq[DocTyp]] = {
+		val c = col[DocTyp](colName)
+
+		if (nReturn == 0) c.find[DocTyp](query).sort(sort).toFuture()
+		else c.find[DocTyp](query).sort(sort).limit(nReturn).toFuture()
 	}
 
 	override def insert[DocTyp](models: Seq[DocTyp])(implicit t: ClassTag[DocTyp]): Future[Unit] = {
